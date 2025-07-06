@@ -39,8 +39,8 @@ form.addEventListener('submit', async (e) => {
                 }, 1500);
             });
         } else {
-            // Local FastAPI server
-            response = await fetch("http://localhost:8000/api/generate_pitch", {
+            // Use relative path for API
+            response = await fetch("/api/generate_pitch", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
