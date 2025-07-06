@@ -1,0 +1,44 @@
+# ycombinator.coach - Project Plan
+
+## Stage 1: Project Setup & MVP
+- [ ] Create project structure
+- [ ] Set up frontend with Tailwind CSS
+- [ ] Implement basic form UI
+- [ ] Set up Azure Functions backend
+- [ ] Integrate OpenAI API
+- [ ] Implement basic pitch generation
+- [ ] Set up deployment pipeline
+
+## Stage 2: Core Features
+- [ ] Add pitch generation logic
+- [ ] Implement YC readiness scoring
+- [ ] Add feedback/suggestions system
+- [ ] Create result display UI
+- [ ] Add loading states
+- [ ] Implement error handling
+
+## Stage 3: Enhancement & Polish
+- [ ] Add user authentication
+- [ ] Implement save/load functionality
+- [ ] Add pitch history
+- [ ] Improve UI/UX
+- [ ] Add responsive design
+
+## Stage 4: Deployment
+- [ ] Set up Azure Static Web App
+- [ ] Configure Azure Functions
+- [ ] Set up custom domain (ycombinator.coach)
+- [ ] Configure SSL/TLS
+- [ ] Set up monitoring
+
+## Stage 5: Post-MVP Features
+- [ ] Add Stripe integration
+- [ ] Implement PDF export
+- [ ] Add advanced analytics
+- [ ] Create user accounts
+- [ ] Add collaboration features
+
+## Current Status: Starting Stage 1
+- Working on initial project setup
+- Setting up basic file structure
+- Implementing core functionality
