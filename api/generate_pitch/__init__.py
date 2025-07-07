@@ -3,6 +3,7 @@ import azure.functions as func
 import json
 import openai
 import os
+import traceback
 from typing import Dict, Any
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -25,8 +26,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
         
     except Exception as e:
+        error_details = {
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
         return func.HttpResponse(
-            json.dumps({"error": str(e)}),
+            json.dumps(error_details),
             status_code=500,
             mimetype="application/json"
         )
