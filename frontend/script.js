@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DEBUG: DOM fully loaded and parsed.');
+
   let conversationHistory = [];
   let originalPitch = {};
   let round = 0;
@@ -12,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Main form submission
   pitchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    console.log('DEBUG: "Generate My Pitch" button clicked.');
+
     showLoading(true);
     resetUI();
     
@@ -24,37 +28,51 @@ document.addEventListener('DOMContentLoaded', () => {
       team: formData.get('team'),
       traction: formData.get('traction'),
     };
+    console.log('DEBUG: Form data collected:', originalPitch);
 
     try {
+      console.log('DEBUG: Sending request to /api/evaluate_pitch...');
       const response = await fetch('/api/evaluate_pitch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(originalPitch),
       });
+      console.log('DEBUG: Received response from fetch.');
+
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Failed to parse error response.' }));
+        console.error('DEBUG: API response not OK.', { status: response.status, errorData });
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();
+      console.log('DEBUG: Successfully parsed JSON response from /api/evaluate_pitch:', result);
+
       conversationHistory = [{ role: 'assistant', content: result.first_question }];
       round = 1;
       displayEvaluation(result);
 
     } catch (error) {
-      console.error('Error during evaluation:', error);
+      console.error('DEBUG: CATCH block - Error during evaluation fetch:', error);
       displayError(error.message);
     } finally {
+      console.log('DEBUG: FINALLY block - Evaluation fetch finished.');
       showLoading(false);
     }
   });
 
   // Handles the conversational back-and-forth
   async function handleUserResponse() {
+    console.log('DEBUG: handleUserResponse function called.');
     const userResponseInput = document.getElementById('userResponse');
     const userResponseText = userResponseInput.value;
-    if (!userResponseText) return;
+    if (!userResponseText) {
+        console.log('DEBUG: User response is empty. Aborting.');
+        return;
+    }
+    console.log('DEBUG: User response captured:', userResponseText);
+
 
     // Disable form while processing
     const sendBtn = document.getElementById('sendResponseBtn');
@@ -67,26 +85,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (round < 3) {
       round++;
       try {
+        console.log('DEBUG: Sending request to /api/refine_pitch...');
         const response = await fetch('/api/refine_pitch', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ history: conversationHistory, pitch: originalPitch }),
         });
+        console.log('DEBUG: Received response from fetch.');
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ error: 'Failed to parse error response.' }));
+          console.error('DEBUG: API response not OK.', { status: response.status, errorData });
           throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
         const result = await response.json();
+        console.log('DEBUG: Successfully parsed JSON response from /api/refine_pitch:', result);
         conversationHistory.push({ role: 'assistant', content: result.next_question });
         updateConversationUI(result.next_question, 'assistant');
 
       } catch (error) {
+        console.error('DEBUG: CATCH block - Error during refine_pitch fetch:', error);
         displayError(error.message);
       }
     } else {
-      // End of conversation, proceed to summary (Phase 3)
+      console.log('DEBUG: Max rounds reached. Generating final summary message.');
       updateConversationUI('Thank you. Based on our conversation, I will now generate the final summary.', 'assistant');
       // Future: call generate_summary API
     }
@@ -95,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- UI HELPER FUNCTIONS ---
 
   function resetUI() {
+    console.log('DEBUG: Resetting UI.');
     pitchResultDiv.classList.add('hidden');
     rubricTableBody.innerHTML = '';
     conversationDiv.innerHTML = '';
@@ -103,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function displayEvaluation(result) {
+    console.log('DEBUG: Displaying evaluation results.');
     result.evaluation.forEach(item => {
       const row = document.createElement('tr');
       row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.area}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.rating}</td>`;
@@ -115,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateConversationUI(text, role) {
+    console.log(`DEBUG: Updating conversation UI for role: ${role}`);
     const messageContainer = document.createElement('div');
 
     if (role === 'user') {
@@ -142,19 +168,27 @@ document.addEventListener('DOMContentLoaded', () => {
       conversationDiv.appendChild(messageContainer);
 
       if (round < 3 && !text.startsWith('Thank you')) {
-        document.getElementById('sendResponseBtn').addEventListener('click', handleUserResponse);
+        const sendBtn = document.getElementById('sendResponseBtn');
+        if (sendBtn) {
+            console.log('DEBUG: Adding event listener to new "Send" button.');
+            sendBtn.addEventListener('click', handleUserResponse);
+        } else {
+            console.error('DEBUG: Could not find "Send" button to attach listener.');
+        }
       }
     }
     messageContainer.scrollIntoView({ behavior: 'smooth' });
   }
 
   function displayError(message) {
+    console.log('DEBUG: Displaying error message:', message);
     conversationDiv.innerHTML = `<div class="p-4 bg-red-100 text-red-700 border border-red-300 rounded-md"><strong>Error:</strong> ${message}</div>`;
     pitchResultDiv.classList.remove('hidden');
     pitchResultDiv.scrollIntoView({ behavior: 'smooth' });
   }
 
   function showLoading(isLoading) {
+    console.log(`DEBUG: Setting loading state to: ${isLoading}`);
     if (isLoading) {
       submitButton.disabled = true;
       submitButton.innerHTML = `
