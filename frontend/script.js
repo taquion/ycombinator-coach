@@ -1,3 +1,4 @@
+// Forcing a file change for git to detect at 2025-07-06T23:59:00-06:00
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DEBUG: DOM fully loaded and parsed.');
 
