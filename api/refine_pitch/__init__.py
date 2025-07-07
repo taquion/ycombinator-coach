@@ -54,7 +54,7 @@ Example JSON output:
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=messages,
-            response_format={ "type": "json_object" }
+
         )
 
         return func.HttpResponse(

@@ -57,7 +57,7 @@ Example JSON output:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": pitch_text}
             ],
-            response_format={ "type": "json_object" }
+
         )
 
         return func.HttpResponse(
