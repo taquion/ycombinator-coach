@@ -137,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Education modal events
-    document.getElementById('save-education').addEventListener('click', () => {
+    educationForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent page reload
         const index = parseInt(educationForm.querySelector('input[type="hidden"]').value, 10);
         const newItem = {
             school: educationForm.elements['school'].value,
@@ -147,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index > -1) {
             profileData.education[index] = newItem;
         } else {
+            if (!profileData.education) profileData.education = [];
             profileData.education.push(newItem);
         }
         renderEducationList();
@@ -156,7 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cancel-education').addEventListener('click', () => closeModal(educationModal));
 
     // Work modal events
-    document.getElementById('save-work').addEventListener('click', () => {
+    workForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent page reload
         const index = parseInt(workForm.querySelector('input[type="hidden"]').value, 10);
         const newItem = {
             companyTitle: workForm.elements['company-title'].value,
@@ -166,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index > -1) {
             profileData.work[index] = newItem;
         } else {
+            if (!profileData.work) profileData.work = [];
             profileData.work.push(newItem);
         }
         renderWorkList();
