@@ -2,19 +2,10 @@
   "platform": {
     "apiRuntime": "python:3.9"
   },
+  "globalHeaders": {
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
+  },
   "routes": [
-    {
-      "route": "/founder-profile.html",
-      "headers": {
-        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
-      }
-    },
-    {
-      "route": "/founder-profile.js",
-      "headers": {
-        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
-      }
-    },
     {
       "route": "/api/*",
       "methods": ["GET", "POST", "OPTIONS"],
