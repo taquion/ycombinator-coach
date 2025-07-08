@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Founder Profile - YC Coach</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#f6f6ef] font-sans text-[#222]">
+  <div class="w-full max-w-6xl mx-auto p-8">
+    <!-- Header -->
+    <header class="mb-8 pb-4 border-b border-gray-200">
+        <a href="index.html" class="text-xs text-gray-500">&lsaquo; Back</a>
+        <h1 class="text-2xl font-bold">Founder Profile</h1>
+    </header>
+
+    <!-- Body Content -->
+    <div class="flex flex-row-reverse gap-8">
+      <!-- Sidebar -->
+      <aside class="w-1/4">
+        <div class="sticky top-8">
+            <div class="p-4 border border-gray-200 rounded-md bg-white">
+                <h4 class="font-bold text-sm">CONTENTS</h4>
+                <ul id="sidebar-nav" class="mt-3 space-y-2 text-sm">
+                    <li><a href="#basics" class="text-orange-600 font-semibold">Basics</a></li>
+                    <li><a href="#roles" class="hover:text-orange-600">Role & Responsibilities</a></li>
+                    <li><a href="#background" class="hover:text-orange-600">Background</a></li>
+                    <li><a href="#social" class="hover:text-orange-600">Social Media</a></li>
+                    <li><a href="#accomplishments" class="hover:text-orange-600">Accomplishments</a></li>
+                </ul>
+            </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="w-3/4">
+        <form id="founderProfileForm" class="space-y-10">
+          <!-- Basics Section -->
+          <div id="basics">
+            <h2 class="text-xl font-bold border-b pb-2">Basics</h2>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="name" class="block text-sm font-medium">Name*</label>
+                <input type="text" id="name" name="name" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="Daniel Nader">
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium">Email*</label>
+                <input type="email" id="email" name="email" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="dnader90@gmail.com">
+              </div>
+              <div>
+                <label for="age" class="block text-sm font-medium">Age</label>
+                <select id="age" name="age" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                  <option>34</option>
+                  <!-- Add other ages -->
+                </select>
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium">Phone Number</label>
+                <input type="tel" id="phone" name="phone" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="+52 81 2039 4717">
+              </div>
+              <div>
+                <label for="gender" class="block text-sm font-medium">Gender</label>
+                <input type="text" id="gender" name="gender" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="Male">
+              </div>
+              <div>
+                <label for="city" class="block text-sm font-medium">City where you currently live*</label>
+                <input type="text" id="city" name="city" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Search...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Role & Responsibilities Section -->
+          <div id="roles">
+            <h2 class="text-xl font-bold border-b pb-2">Role & Responsibilities</h2>
+            <div class="mt-4 space-y-6">
+              <div>
+                <label for="title" class="block text-sm font-medium">What is your title, or if you haven't set it yet, main responsibility?*</label>
+                <input type="text" id="title" name="title" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="CEO, CTO, Sales, Engineering, etc.">
+              </div>
+              <div>
+                <label for="equity" class="block text-sm font-medium">What percent equity do you have?*</label>
+                 <p class="text-sm text-gray-500">If you haven't incorporated yet, give the equity percent you expect to have.</p>
+                <input type="text" id="equity" name="equity" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+              </div>
+              <div>
+                  <label class="block text-sm font-medium">Are you a technical founder?*</label>
+                  <p class="text-sm text-gray-500">You are a programmer, engineer, or scientist who can build the product without outside assistance.</p>
+                  <div class="mt-2 space-x-4">
+                    <label><input type="radio" name="technical" value="yes" class="mr-1"> Yes</label>
+                    <label><input type="radio" name="technical" value="no" class="mr-1"> No</label>
+                  </div>
+              </div>
+              <div>
+                  <label class="block text-sm font-medium">Are you currently in school?</label>
+                  <div class="mt-2 space-x-4">
+                    <label><input type="radio" name="in_school" value="yes" class="mr-1"> Yes</label>
+                    <label><input type="radio" name="in_school" value="no" class="mr-1"> No</label>
+                  </div>
+              </div>
+              <div>
+                  <label class="block text-sm font-medium">If accepted to YC, will you commit to working exclusively on this project for the next year?*</label>
+                  <p class="text-sm text-gray-500">i.e. you won't be in school or have another job</p>
+                  <div class="mt-2 space-x-4">
+                    <label><input type="radio" name="exclusive_commit" value="yes" class="mr-1"> Yes</label>
+                    <label><input type="radio" name="exclusive_commit" value="no" class="mr-1"> No</label>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Background Section -->
+          <div id="background">
+            <h2 class="text-xl font-bold border-b pb-2">Background</h2>
+            <div class="mt-4 space-y-6">
+                <div>
+                    <label for="linkedin" class="block text-sm font-medium">Your LinkedIn URL*</label>
+                    <input type="url" id="linkedin" name="linkedin" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="https://www.linkedin.com/in/dnader90/">
+                </div>
+                <div class="p-4 border rounded-md bg-white space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold">Education*</h3>
+                        <button type="button" class="text-sm font-semibold text-orange-600">+ Add</button>
+                    </div>
+                    <p class="text-sm text-gray-500">Include your college and any advanced degrees. Should you be accepted, we may ask for academic transcripts. If you didn't attend college, list the last school you attended.</p>
+                    <!-- Education items here -->
+                </div>
+                <div class="p-4 border rounded-md bg-white space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold">Work History*</h3>
+                        <button type="button" class="text-sm font-semibold text-orange-600">+ Add</button>
+                    </div>
+                     <p class="text-sm text-gray-500">Should you be accepted, we may ask for references.</p>
+                    <!-- Work items here -->
+                </div>
+            </div>
+          </div>
+
+          <!-- Social Media Section -->
+          <div id="social">
+            <h2 class="text-xl font-bold border-b pb-2">Social Media</h2>
+            <div class="mt-4 space-y-6">
+              <div>
+                <label for="personal_website" class="block text-sm font-medium">Personal website</label>
+                <input type="url" id="personal_website" name="personal_website" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="https://">
+              </div>
+              <div>
+                <label for="github" class="block text-sm font-medium">Github URL</label>
+                <input type="url" id="github" name="github" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="https://">
+              </div>
+              <div>
+                <label for="twitter" class="block text-sm font-medium">Twitter URL</label>
+                <input type="url" id="twitter" name="twitter" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="https://">
+              </div>
+            </div>
+          </div>
+
+          <!-- Accomplishments Section -->
+          <div id="accomplishments">
+            <h2 class="text-xl font-bold border-b pb-2">Accomplishments</h2>
+            <div class="mt-4 space-y-6">
+              <div>
+                <label for="hack" class="block text-sm font-medium">Please tell us about a time you most successfully hacked some (non-computer) system to your advantage.</label>
+                <textarea id="hack" name="hack" rows="4" class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+              <div>
+                <label for="impressive_thing" class="block text-sm font-medium">Please tell us in one or two sentences about the most impressive thing other than this startup that you have built or achieved.</label>
+                <textarea id="impressive_thing" name="impressive_thing" rows="4" class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+              <div>
+                <label for="built_things" class="block text-sm font-medium">Tell us about things you've built before. For example apps you've built, websites, open source contributions. Include URLs if possible.</label>
+                <textarea id="built_things" name="built_things" rows="4" class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+              <div>
+                <label for="awards" class="block text-sm font-medium">List any competitions/awards you have won, or papers you've published.</label>
+                <textarea id="awards" name="awards" rows="4" class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <!-- Footer / Actions -->
+    <footer class="mt-12 pt-6 border-t flex justify-between items-center">
+        <a href="index.html" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">Back</a>
+        <button type="submit" form="founderProfileForm" class="px-4 py-2 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600">Save founder profile</button>
+    </footer>
+  </div>
+  
+  <script src="founder-profile.js"></script>
+</body>
+</html>
