@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         listEl.innerHTML = ''; // Clear existing
         profileData.education?.forEach((item, index) => {
             const div = document.createElement('div');
-            div.className = 'flex justify-between items-center';
+            div.className = 'flex justify-between items-center p-3 rounded-md bg-gray-50';
             div.innerHTML = `
                 <div>
                     <p class="font-semibold">${item.school}</p>
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         listEl.innerHTML = ''; // Clear existing
         profileData.work?.forEach((item, index) => {
             const div = document.createElement('div');
-            div.className = 'flex justify-between items-start';
+            div.className = 'flex justify-between items-start p-3 rounded-md bg-gray-50';
             div.innerHTML = `
                 <div>
                     <p class="font-semibold">${item.companyTitle}</p>
@@ -57,19 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedProfile) {
             profileData = JSON.parse(savedProfile);
         } else {
-            // Pre-populate with default data if nothing is saved
+            // Start with empty data if nothing is saved
             profileData = {
-                education: [
-                    { school: 'Harvard Extension School', degree: 'MA, Data Science', dates: 'Jul 2022 - Jul 2025' },
-                    { school: 'Universidad de Monterrey', degree: 'BA, Economics', dates: 'Dec 2007 - Dec 2011' }
-                ],
-                work: [
-                    { companyTitle: 'Crediclub - Product Director', description: 'Product director at a Fintech company in Mexico', dates: 'Nov 2023 - Present' },
-                    { companyTitle: 'EnviaFlores.com - Director Comercial & Marketing', description: '', dates: 'Feb 2021 - Nov 2023' },
-                    { companyTitle: 'EnviaFlores.com - Director de operaciones', description: '', dates: 'Jan 2019 - Jan 2021' },
-                    { companyTitle: 'Rappi - City Manager', description: '', dates: 'Mar 2018 - Dec 2018' },
-                    { companyTitle: 'Uber - Sr. Operations and Logistics Manager', description: '', dates: 'Dec 2016 - Mar 2018' },
-                ]
+                education: [],
+                work: []
             };
         }
 
