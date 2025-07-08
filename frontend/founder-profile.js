@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Force clear old storage to prevent conflicts
+    localStorage.removeItem('founderProfile');
+    localStorage.removeItem('founderProfile-v2');
     const profileKey = 'founderProfile-v2';
     let profileData = {};
 
