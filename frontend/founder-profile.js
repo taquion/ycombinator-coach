@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const profileKey = 'founderProfile';
+    const profileKey = 'founderProfile-v2';
     let profileData = {};
 
     // --- MODAL AND FORM ELEMENTS ---
