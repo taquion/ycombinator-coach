@@ -118,25 +118,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- EVENT LISTENERS ---
-    document.querySelector('[aria-labelledby="background"]').addEventListener('click', (e) => {
-        if (e.target.textContent === '+ Add') {
-            const section = e.target.closest('.p-4');
-            if (section.querySelector('#education-list')) {
-                openModal(educationModal, educationForm);
-            } else if (section.querySelector('#work-history-list')) {
-                openModal(workModal, workForm);
+    function setupEventListeners() {
+        document.body.addEventListener('click', (e) => {
+            const addBtn = e.target.closest('.add-btn');
+            const editBtn = e.target.closest('.edit-btn');
+
+            if (addBtn) {
+                const section = addBtn.closest('.p-4');
+                if (section.querySelector('#education-list')) {
+                    openModal(educationModal, educationForm);
+                } else if (section.querySelector('#work-history-list')) {
+                    openModal(workModal, workForm);
+                }
+            } else if (editBtn) {
+                const type = editBtn.dataset.type;
+                const index = parseInt(editBtn.dataset.index, 10);
+                if (type === 'education') {
+                    openModal(educationModal, educationForm, profileData.education[index], index);
+                } else if (type === 'work') {
+                    openModal(workModal, workForm, profileData.work[index], index);
+                }
             }
-        }
-        if (e.target.classList.contains('edit-btn')) {
-            const type = e.target.dataset.type;
-            const index = parseInt(e.target.dataset.index, 10);
-            if (type === 'education') {
-                openModal(educationModal, educationForm, profileData.education[index], index);
-            } else if (type === 'work') {
-                openModal(workModal, workForm, profileData.work[index], index);
-            }
-        }
-    });
+        });
+    }
 
     // Education modal events
     document.getElementById('save-education').addEventListener('click', () => {
@@ -183,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Profile saved!');
     });
 
-    // --- INITIAL LOAD ---
+    // --- INITIAL LOAD & SETUP ---
     loadProfile();
+    setupEventListeners();
 });
