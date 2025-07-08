@@ -1,206 +1,213 @@
-// Forcing a file change for git to detect at 2025-07-06T23:59:00-06:00
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DEBUG: DOM fully loaded and parsed.');
+    console.log('DEBUG: DOM fully loaded and parsed');
 
-  let conversationHistory = [];
-  let originalPitch = {};
-  let round = 0;
+    // --- UI Elements ---
+    const pitchForm = document.getElementById('pitchForm');
+    const pitchResultDiv = document.getElementById('pitchResult');
+    const conversationDiv = document.getElementById('conversation');
+    const countdownContainer = document.getElementById('countdown-container');
+    const sections = document.querySelectorAll('div[id]');
+    const navLinks = document.querySelectorAll('div.sticky ul a');
 
-  const pitchForm = document.getElementById('pitchForm');
-  const pitchResultDiv = document.getElementById('pitchResult');
-  const rubricTableBody = document.getElementById('rubricTableBody');
-  const conversationDiv = document.getElementById('conversation');
-  const submitButton = pitchForm.querySelector('button[type="submit"]');
+    // --- State ---
+    let conversationHistory = [];
+    let originalPitch = {};
+    let round = 0;
+    const maxRounds = 3;
 
-  // Main form submission
-  pitchForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    console.log('DEBUG: "Generate My Pitch" button clicked.');
-
-    showLoading(true);
-    resetUI();
-    
-    const formData = new FormData(pitchForm);
-    originalPitch = {
-      startupName: formData.get('startupName'),
-      oneLiner: formData.get('oneLiner'),
-      problem: formData.get('problem'),
-      solution: formData.get('solution'),
-      team: formData.get('team'),
-      traction: formData.get('traction'),
-    };
-    console.log('DEBUG: Form data collected:', originalPitch);
-
-    try {
-      console.log('DEBUG: Sending request to /api/evaluate_pitch...');
-      const response = await fetch('/api/evaluate_pitch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(originalPitch),
-      });
-      console.log('DEBUG: Received response from fetch.');
-
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Failed to parse error response.' }));
-        console.error('DEBUG: API response not OK.', { status: response.status, errorData });
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('DEBUG: Successfully parsed JSON response from /api/evaluate_pitch:', result);
-
-      conversationHistory = [{ role: 'assistant', content: result.first_question }];
-      round = 1;
-      displayEvaluation(result);
-
-    } catch (error) {
-      console.error('DEBUG: CATCH block - Error during evaluation fetch:', error);
-      displayError(error.message);
-    } finally {
-      console.log('DEBUG: FINALLY block - Evaluation fetch finished.');
-      showLoading(false);
-    }
-  });
-
-  // Handles the conversational back-and-forth
-  async function handleUserResponse() {
-    console.log('DEBUG: handleUserResponse function called.');
-    const userResponseInput = document.getElementById('userResponse');
-    const userResponseText = userResponseInput.value;
-    if (!userResponseText) {
-        console.log('DEBUG: User response is empty. Aborting.');
+    if (!pitchForm) {
+        console.error('DEBUG: Critical error - pitchForm not found!');
         return;
     }
-    console.log('DEBUG: User response captured:', userResponseText);
 
+    // --- Initial Setup ---
+    setupCountdown();
+    setupScrollSpy();
 
-    // Disable form while processing
-    const sendBtn = document.getElementById('sendResponseBtn');
-    userResponseInput.disabled = true;
-    if(sendBtn) sendBtn.disabled = true;
+    // --- Countdown Timer --- 
+    function setupCountdown() {
+        if (!countdownContainer) return;
+        const deadline = new Date('2025-08-04T20:00:00-07:00'); // Aug 04 at 8pm PT
+        const now = new Date();
+        const diffTime = deadline - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    conversationHistory.push({ role: 'user', content: userResponseText });
-    updateConversationUI(userResponseText, 'user');
-
-    if (round < 3) {
-      round++;
-      try {
-        console.log('DEBUG: Sending request to /api/refine_pitch...');
-        const response = await fetch('/api/refine_pitch', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ history: conversationHistory, pitch: originalPitch }),
-        });
-        console.log('DEBUG: Received response from fetch.');
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ error: 'Failed to parse error response.' }));
-          console.error('DEBUG: API response not OK.', { status: response.status, errorData });
-          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        const daysText = countdownContainer.querySelector('p:first-child');
+        if (daysText) {
+            daysText.textContent = `${diffDays} days left`;
         }
-
-        const result = await response.json();
-        console.log('DEBUG: Successfully parsed JSON response from /api/refine_pitch:', result);
-        conversationHistory.push({ role: 'assistant', content: result.next_question });
-        updateConversationUI(result.next_question, 'assistant');
-
-      } catch (error) {
-        console.error('DEBUG: CATCH block - Error during refine_pitch fetch:', error);
-        displayError(error.message);
-      }
-    } else {
-      console.log('DEBUG: Max rounds reached. Generating final summary message.');
-      updateConversationUI('Thank you. Based on our conversation, I will now generate the final summary.', 'assistant');
-      // Future: call generate_summary API
     }
-  }
-  
-  // --- UI HELPER FUNCTIONS ---
 
-  function resetUI() {
-    console.log('DEBUG: Resetting UI.');
-    pitchResultDiv.classList.add('hidden');
-    rubricTableBody.innerHTML = '';
-    conversationDiv.innerHTML = '';
-    conversationHistory = [];
-    round = 0;
-  }
+    // --- Sidebar Scrollspy --- 
+    function setupScrollSpy() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('text-orange-600', 'font-semibold');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('text-orange-600', 'font-semibold');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-30% 0px -70% 0px' });
 
-  function displayEvaluation(result) {
-    console.log('DEBUG: Displaying evaluation results.');
-    result.evaluation.forEach(item => {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.area}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.rating}</td>`;
-      rubricTableBody.appendChild(row);
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    }
+
+    // --- Form Submission --- 
+    pitchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('DEBUG: Form submitted');
+
+        showLoading(true);
+        pitchResultDiv.classList.remove('hidden');
+        conversationDiv.innerHTML = ''; // Clear previous results
+        conversationHistory = [];
+        round = 0;
+
+        const formData = new FormData(pitchForm);
+        originalPitch = Object.fromEntries(formData.entries());
+        console.log('DEBUG: Original pitch data collected:', originalPitch);
+
+        try {
+            console.log('DEBUG: Sending request to /api/evaluate_pitch...');
+            const response = await fetch('/api/evaluate_pitch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(originalPitch),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: 'Failed to parse error response.' }));
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('DEBUG: Successfully parsed JSON response:', result);
+            startConversation(result.first_question);
+
+        } catch (error) {
+            console.error('DEBUG: CATCH block - Error during fetch:', error);
+            displayError(error.message);
+        } finally {
+            showLoading(false);
+        }
     });
 
-    updateConversationUI(result.first_question, 'assistant');
-    pitchResultDiv.classList.remove('hidden');
-    pitchResultDiv.scrollIntoView({ behavior: 'smooth' });
-  }
+    // --- Conversation Logic ---
+    function startConversation(firstQuestion) {
+        console.log('DEBUG: Starting conversation');
+        round = 1;
+        updateConversationUI(firstQuestion, 'assistant');
+        conversationHistory.push({ role: 'assistant', content: firstQuestion });
+        addUserInput();
+    }
 
-  function updateConversationUI(text, role) {
-    console.log(`DEBUG: Updating conversation UI for role: ${role}`);
-    const messageContainer = document.createElement('div');
+    function addUserInput() {
+        const inputContainer = document.createElement('div');
+        inputContainer.className = 'mt-4';
+        inputContainer.innerHTML = `
+      <textarea id="userResponse" class="w-full p-2 border border-gray-300 rounded-md" rows="3" placeholder="Your answer..."></textarea>
+      <button id="sendResponse" class="mt-2 bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700">Send</button>
+    `;
+        conversationDiv.appendChild(inputContainer);
+        document.getElementById('sendResponse').addEventListener('click', handleUserResponse);
+    }
 
-    if (role === 'user') {
-      const userInputArea = conversationDiv.querySelector('.user-input-area');
-      if (userInputArea) {
-        userInputArea.innerHTML = `<div class="p-4 bg-blue-100 text-blue-800 border border-blue-200 rounded-md my-4"><strong>You:</strong><p class="mt-1">${text}</p></div>`;
-      }
-    } else {
-      let html = `
-        <div class="mt-6 p-4 border rounded-lg bg-gray-50 ai-message">
-          <p class="font-semibold text-gray-800">AI Coach:</p>
-          <p class="mt-2 text-gray-700">${text}</p>
+    async function handleUserResponse() {
+        const userResponse = document.getElementById('userResponse').value;
+        if (!userResponse) return;
+
+        updateConversationUI(userResponse, 'user');
+        conversationHistory.push({ role: 'user', content: userResponse });
+
+        const inputContainer = document.getElementById('userResponse').parentElement;
+        inputContainer.remove();
+
+        if (round < maxRounds) {
+            round++;
+            try {
+                const response = await fetch('/api/refine_pitch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ history: conversationHistory, pitch: originalPitch }),
+                });
+                if (!response.ok) throw new Error('Failed to get next question.');
+                const result = await response.json();
+                updateConversationUI(result.next_question, 'assistant');
+                conversationHistory.push({ role: 'assistant', content: result.next_question });
+                addUserInput();
+            } catch (error) {
+                displayError(error.message);
+            }
+        } else {
+            updateConversationUI('Thank you. Based on our conversation, I will now generate the final summary.', 'assistant');
+            await generateFinalSummary();
+        }
+    }
+
+    async function generateFinalSummary() {
+        try {
+            const response = await fetch('/api/generate_summary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ history: conversationHistory, pitch: originalPitch }),
+            });
+            if (!response.ok) throw new Error('Failed to generate summary.');
+            const result = await response.json();
+            displaySummary(result.summary);
+        } catch (error) {
+            displayError(error.message);
+        }
+    }
+
+    // --- UI Update Functions ---
+    function updateConversationUI(message, role) {
+        const messageDiv = document.createElement('div');
+        const bubbleClass = role === 'user' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800';
+        const alignment = role === 'user' ? 'text-right' : 'text-left';
+        messageDiv.className = `w-full ${alignment} mb-4`;
+        messageDiv.innerHTML = `<div class="inline-block ${bubbleClass} rounded-lg px-4 py-2 max-w-xl">${message.replace(/\n/g, '<br>')}</div`;
+        conversationDiv.appendChild(messageDiv);
+        messageDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function displayError(errorMessage) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'mt-4 p-4 bg-red-100 text-red-700 border border-red-200 rounded-lg';
+        errorDiv.textContent = `Error: ${errorMessage}`;
+        conversationDiv.appendChild(errorDiv);
+    }
+
+    function displaySummary(summaryMarkdown) {
+        const summaryHtml = summaryMarkdown.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />');
+        const summaryContainer = document.createElement('div');
+        summaryContainer.className = 'mt-6';
+        summaryContainer.innerHTML = `
+        <h4 class="text-lg font-semibold text-gray-800">Your Refined Pitch</h4>
+        <div class="mt-2 p-4 border rounded-lg bg-green-50 text-green-800">
+            ${summaryHtml}
         </div>
       `;
-      // Check if it's the end of the conversation
-      if (round < 3 && !text.startsWith('Thank you')) {
-        html += `
-          <div class="mt-4 user-input-area">
-            <textarea id="userResponse" class="w-full p-2 border rounded-md" placeholder="Your answer..."></textarea>
-            <button id="sendResponseBtn" class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Send</button>
-          </div>
-        `;
-      }
-      messageContainer.innerHTML = html;
-      conversationDiv.appendChild(messageContainer);
+        conversationDiv.appendChild(summaryContainer);
+        summaryContainer.scrollIntoView({ behavior: 'smooth' });
+    }
 
-      if (round < 3 && !text.startsWith('Thank you')) {
-        const sendBtn = document.getElementById('sendResponseBtn');
-        if (sendBtn) {
-            console.log('DEBUG: Adding event listener to new "Send" button.');
-            sendBtn.addEventListener('click', handleUserResponse);
-        } else {
-            console.error('DEBUG: Could not find "Send" button to attach listener.');
+    function showLoading(isLoading) {
+        const button = document.querySelector('footer button[type="submit"]');
+        if (button) {
+            if (isLoading) {
+                button.disabled = true;
+                button.textContent = 'Getting Feedback...';
+            } else {
+                button.disabled = false;
+                button.textContent = 'Get Feedback';
+            }
         }
-      }
     }
-    messageContainer.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function displayError(message) {
-    console.log('DEBUG: Displaying error message:', message);
-    conversationDiv.innerHTML = `<div class="p-4 bg-red-100 text-red-700 border border-red-300 rounded-md"><strong>Error:</strong> ${message}</div>`;
-    pitchResultDiv.classList.remove('hidden');
-    pitchResultDiv.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function showLoading(isLoading) {
-    console.log(`DEBUG: Setting loading state to: ${isLoading}`);
-    if (isLoading) {
-      submitButton.disabled = true;
-      submitButton.innerHTML = `
-        <svg class="animate-spin h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Evaluating...`;
-    } else {
-      submitButton.disabled = false;
-      submitButton.textContent = 'Generate My Pitch';
-    }
-  }
 });

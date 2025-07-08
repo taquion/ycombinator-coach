@@ -12,7 +12,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         req_body = req.get_json()
         conversation_history = req_body.get('history', [])
-        pitch_text = req_body.get('pitch', '')
+        pitch_object = req_body.get('pitch', {})
+        pitch_text = json.dumps(pitch_object, indent=2)
 
         if not conversation_history or not pitch_text:
             return func.HttpResponse(
