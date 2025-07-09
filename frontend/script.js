@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             founderCard.innerHTML = `
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="font-semibold">${founder.name || 'New Founder'}</h3>
+                        <h3 class="font-semibold">${founder.name || 'Founder'}</h3>
                         <span class="text-sm ${isComplete ? 'text-green-600' : 'text-red-500'}">${isComplete ? 'Profile complete' : 'Profile incomplete'}</span>
                     </div>
                     <div class="flex items-center space-x-4">
