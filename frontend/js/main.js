@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                     <p class="font-semibold">${founder.name || `Founder ${founder.id}`}</p>
                 </div>
-                <a href="/founder-profile.html?id=${founder.id}" class="text-sm font-semibold text-orange-600 hover:underline">Edit Profile</a>
+                <a href="founder-profile.html?id=${founder.id}" class="text-sm font-semibold text-orange-600 hover:underline">Edit Profile</a>
             `;
             founderList.appendChild(founderEl);
         });
