@@ -47,22 +47,40 @@ document.addEventListener('DOMContentLoaded', () => {
         founderListEl.innerHTML = ''; // Clear existing list
 
         founders.forEach(founder => {
-            const founderEl = document.createElement('div');
-            founderEl.className = 'p-4 border border-gray-200 rounded-md bg-white flex justify-between items-center';
-            
-            const isComplete = founder.name && founder.linkedin; // Simple check for completion
-            const statusClass = isComplete ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
-            const statusText = isComplete ? 'Profile complete' : 'Profile incomplete';
+            const founderCard = document.createElement('div');
+            founderCard.className = 'founder-card bg-white p-4 rounded-lg border border-gray-200';
+            founderCard.dataset.id = founder.id;
 
-            founderEl.innerHTML = `
-                <div>
-                    <p class="font-semibold">${founder.name || 'New Founder'}</p>
-                    <span class="text-xs ${statusClass} px-2 py-1 rounded-full">${statusText}</span>
+            const isComplete = founder.name && founder.email; // Simple check for completion
+
+            founderCard.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-semibold">${founder.name || 'New Founder'}</h3>
+                        <span class="text-sm ${isComplete ? 'text-green-600' : 'text-red-500'}">${isComplete ? 'Profile complete' : 'Profile incomplete'}</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="founder-profile.html?id=${founder.id}" class="edit-profile-btn text-orange-600 font-semibold">Complete my profile →</a>
+                        <button class="delete-founder-btn text-red-500 hover:text-red-700" data-id="${founder.id}">Delete</button>
+                    </div>
                 </div>
-                <a href="founder-profile.html?id=${founder.id}" class="text-sm text-orange-600 border border-orange-400 rounded-full px-3 py-1 hover:bg-orange-50">Complete my profile &rarr;</a>
             `;
-            founderListEl.appendChild(founderEl);
+            founderList.appendChild(founderCard);
         });
+
+        // Add event listeners for the new delete buttons
+        document.querySelectorAll('.delete-founder-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const founderId = event.target.dataset.id;
+                deleteFounder(founderId);
+            });
+        });
+    }
+
+    function deleteFounder(founderId) {
+        founders = founders.filter(f => f.id !== parseInt(founderId));
+        localStorage.setItem(foundersKey, JSON.stringify(founders));
+        renderFounderList();
     }
 
     function addFounder() {
