@@ -9,7 +9,7 @@ test.describe('YC Coach - Core Functionality', () => {
         await page.goto('/');
 
         // 1. Check if the page title is correct
-        await expect(page).toHaveTitle(/YC Application Coach/);
+        await expect(page).toHaveTitle(/ycombinator.coach - AI YC Pitch Tool/);
 
         // 2. Check if the main heading is visible
         await expect(page.getByRole('heading', { name: 'Get Coaching on your YC Application' })).toBeVisible();
