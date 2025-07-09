@@ -7,19 +7,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveFounders = (founders) => localStorage.setItem('founders', JSON.stringify(founders));
 
     const renderFounders = () => {
-        const founders = getFounders();
-        founderList.innerHTML = ''; // Clear existing list
-        founders.forEach((founder) => {
-            const founderEl = document.createElement('div');
-            founderEl.className = 'founder-item flex justify-between items-center p-3 bg-white border border-gray-200 rounded-md';
-            founderEl.innerHTML = `
-                <div>
-                    <p class="font-semibold">${founder.name || `Founder ${founder.id}`}</p>
-                </div>
-                <a href="founder-profile.html?id=${founder.id}" class="text-sm font-semibold text-orange-600 hover:underline">Edit Profile</a>
-            `;
-            founderList.appendChild(founderEl);
-        });
+        const founders = JSON.parse(localStorage.getItem('founders')) || [];
+        founderList.innerHTML = ''; // Clear previous content
+        if (founders.length === 0) {
+            founderList.innerHTML = '<p class="text-gray-500">No co-founders have been added yet.</p>';
+        } else {
+            founders.forEach((founder) => {
+                const founderEl = document.createElement('div');
+                founderEl.className = 'founder-item flex justify-between items-center p-3 bg-white border border-gray-200 rounded-md';
+                founderEl.innerHTML = `
+                    <div>
+                        <p class="font-semibold">${founder.name || `Founder ${founder.id}`}</p>
+                    </div>
+                    <a href="founder-profile.html?id=${founder.id}" class="text-sm font-semibold text-orange-600 hover:underline">Edit Profile</a>
+                `;
+                founderList.appendChild(founderEl);
+            });
+        }
     };
 
     const addCofounder = () => {
