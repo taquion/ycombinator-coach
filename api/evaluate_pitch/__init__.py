@@ -6,9 +6,15 @@ import os
 import csv
 from typing import Dict, Any
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
-
 def main(req: func.HttpRequest) -> func.HttpResponse:
+    # By moving the key assignment here, we ensure it only runs when the function is called.
+    openai.api_key = os.environ.get("OPENAI_API_KEY")
+    if not openai.api_key:
+        return func.HttpResponse(
+            json.dumps({"error": "The OPENAI_API_KEY environment variable is not set."}),
+            status_code=500,
+            mimetype="application/json"
+        )
     logging.info('Python HTTP trigger function processed a request.')
 
     try:

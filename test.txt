@@ -1,0 +1,82 @@
+# YC Coach - Automated Test Suite Documentation
+
+# Triggering a new deployment to test the full CI/CD workflow.
+
+This document provides a human-readable summary of the automated tests implemented for this project. These tests are designed to run automatically after each deployment to ensure the core functionality of the application remains stable and reliable.
+
+---
+
+## 1. Frontend End-to-End (E2E) Tests
+
+These tests use the Playwright framework to simulate real user interactions in a live browser environment. They run against the deployed application URL.
+
+**Test File:** `tests/e2e.spec.js`
+
+### Test Case: Page Load & Initial State
+*   **Purpose:** To verify that the application loads correctly and the initial state is clean.
+*   **Steps:**
+    1.  Navigates to the live application URL.
+    2.  Checks that the page title is correct (`YC Application Coach`).
+    3.  Verifies that the main heading is visible.
+    4.  Confirms that the founder list area is visible but contains zero founders.
+    5.  Ensures the `+ Add a co-founder` button is visible.
+
+### Test Case: Add and Edit a Founder
+*   **Purpose:** To verify the core user workflow of adding a new founder and editing their profile.
+*   **Steps:**
+    1.  Navigates to the live application URL.
+    2.  Clicks the `+ Add a co-founder` button.
+    3.  Verifies that a new founder item (`Founder 1`) appears in the list.
+    4.  Clicks the `Edit Profile` button for the new founder.
+    5.  Verifies that the browser navigates to the `founder-profile.html` page.
+    6.  Fills in the founder's name input field.
+    7.  Clicks the `Save and Go to Main Page` button.
+    8.  Verifies that the browser returns to the main application page.
+    9.  Confirms that the founder's name in the list has been updated.
+
+---
+
+## 2. Backend API Unit Tests
+
+These tests use the Pytest framework to check each API function in isolation. They ensure the business logic is correct without making real calls to the OpenAI API.
+
+**Test Directory:** `api/tests/`
+
+### Core Setup (`api/conftest.py`)
+*   A special configuration file automatically sets a dummy `OPENAI_API_KEY` environment variable before any tests run. This prevents the application code from crashing when it's imported by the test runner.
+
+### Test: `evaluate_pitch`
+*   **Purpose:** To verify the initial pitch evaluation function.
+*   **Test File:** `test_evaluate_pitch.py`
+*   **Checks:**
+    *   **Successful Request:** Simulates a valid POST request with founder and pitch data. It mocks the OpenAI API to return a predefined evaluation and question. The test asserts that the function returns a `200 OK` status and that the response body contains the expected data from the mock.
+    *   **Error Handling:** Simulates a request with invalid data (e.g., an empty body) and asserts that the function correctly returns an error status code (`500`).
+
+---
+
+## 3. Backend Integration Test
+
+This is a single, targeted test designed to run only after a successful deployment to the `main` branch. Its sole purpose is to provide confidence that the live application can successfully connect to the OpenAI API.
+
+**Test File:** `api/tests/test_integration.py`
+
+### Test Case: Real OpenAI API Connection
+*   **Purpose:** To verify that the `OPENAI_API_KEY` is valid and that a connection can be established with the live OpenAI API.
+*   **How it Works:**
+    1.  This test is specially marked and runs separately from the main unit tests.
+    2.  The GitHub Actions workflow securely injects the real `OPENAI_API_KEY` (stored as a GitHub Secret) into the test environment.
+    3.  The test makes a simple, low-cost call to the `gpt-3.5-turbo` model.
+    4.  It asserts that a successful response is received from the API.
+*   **Note:** This test does *not* run during normal development to save costs and time. It only runs as a final verification step in the automated deployment pipeline.
+
+### Test: `refine_pitch`
+*   **Purpose:** To verify the pitch refinement and follow-up question function.
+*   **Test File:** `test_refine_pitch.py`
+*   **Checks:**
+    *   **Successful Request:** Simulates a valid POST request containing the required `pitch`, `history`, and `founders` data. It mocks the OpenAI API and asserts that the function returns a `200 OK` status with the expected JSON response.
+
+### Test: `generate_summary`
+*   **Purpose:** To verify the final summary generation function.
+*   **Test File:** `test_generate_summary.py`
+*   **Checks:**
+    *   **Successful Request:** Simulates a valid POST request with the required `pitch`, `history`, and `founders` data. It mocks the OpenAI API and asserts that the function returns a `200 OK` status with the expected summary in the JSON response.

@@ -1,0 +1,23 @@
+{
+  "name": "ycombinator",
+  "version": "1.0.0",
+  "description": "An AI-powered tool that helps startup founders create and refine their Y Combinator pitch.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taquion/ycombinator-coach.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taquion/ycombinator-coach/issues"
+  },
+  "homepage": "https://github.com/taquion/ycombinator-coach#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.53.2"
+  }
+}
