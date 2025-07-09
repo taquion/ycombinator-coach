@@ -22,11 +22,36 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         req_body = req.get_json()
 
+        # --- Founder Profile Aggregation ---
+        founders_data = req_body.get('founders', [])
+        founder_profiles_text = ""
+        for i, founder in enumerate(founders_data):
+            founder_profiles_text += f"--- Founder {i+1} Profile ---\n"
+            founder_profiles_text += f"Name: {founder.get('name', 'Not provided')}\n"
+            founder_profiles_text += f"Role: {founder.get('title', 'Not provided')}\n"
+            founder_profiles_text += f"Equity: {founder.get('equity', 'Not provided')}%\n"
+            founder_profiles_text += f"Is Technical: {founder.get('technical', 'Not provided')}\n"
+            founder_profiles_text += f"LinkedIn: {founder.get('linkedin', 'Not provided')}\n"
+            
+            education_history = founder.get('education', [])
+            if education_history:
+                founder_profiles_text += "Education:\n"
+                for edu in education_history:
+                    founder_profiles_text += f"  - School: {edu.get('school', 'N/A')}, Degree: {edu.get('degree', 'N/A')}, Dates: {edu.get('edu-dates', 'N/A')}\n"
+            
+            work_history = founder.get('work', [])
+            if work_history:
+                founder_profiles_text += "Work History:\n"
+                for work in work_history:
+                    founder_profiles_text += f"  - Company/Title: {work.get('company-title', 'N/A')}, Dates: {work.get('work-dates', 'N/A')}\n"
+            founder_profiles_text += "\n"
+
         # Create a detailed pitch text from all form fields
         pitch_data = {
             # Founders
-            'technical_work': req_body.get('technicalWork', 'Not provided'),
-            'looking_for_cofounder': req_body.get('lookingForCofounder', 'Not provided'),
+            'founder_profiles': founder_profiles_text.strip(),
+            'technical_work_responsibilities': req_body.get('technicalWork', 'Not provided'),
+            'looking_for_cofounder_status': req_body.get('lookingForCofounder', 'Not provided'),
             # Company
             'company_name': req_body.get('startupName', 'Not provided'),
             'company_url': req_body.get('companyUrl', 'Not provided'),

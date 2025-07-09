@@ -13,9 +13,37 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         req_body = req.get_json()
         conversation_history = req_body.get('history', [])
         pitch_object = req_body.get('pitch', {})
+
+        # --- Founder Profile Aggregation ---
+        founders_data = req_body.get('founders', [])
+        founder_profiles_text = ""
+        for i, founder in enumerate(founders_data):
+            founder_profiles_text += f"--- Founder {i+1} Profile ---\n"
+            founder_profiles_text += f"Name: {founder.get('name', 'Not provided')}\n"
+            founder_profiles_text += f"Role: {founder.get('title', 'Not provided')}\n"
+            founder_profiles_text += f"Equity: {founder.get('equity', 'Not provided')}%\n"
+            founder_profiles_text += f"Is Technical: {founder.get('technical', 'Not provided')}\n"
+            founder_profiles_text += f"LinkedIn: {founder.get('linkedin', 'Not provided')}\n"
+            
+            education_history = founder.get('education', [])
+            if education_history:
+                founder_profiles_text += "Education:\n"
+                for edu in education_history:
+                    founder_profiles_text += f"  - School: {edu.get('school', 'N/A')}, Degree: {edu.get('degree', 'N/A')}, Dates: {edu.get('edu-dates', 'N/A')}\n"
+            
+            work_history = founder.get('work', [])
+            if work_history:
+                founder_profiles_text += "Work History:\n"
+                for work in work_history:
+                    founder_profiles_text += f"  - Company/Title: {work.get('company-title', 'N/A')}, Dates: {work.get('work-dates', 'N/A')}\n"
+            founder_profiles_text += "\n"
+
+        # Add founder profiles to the main pitch object
+        pitch_object['founder_profiles'] = founder_profiles_text.strip()
+
         pitch_text = json.dumps(pitch_object, indent=2)
 
-        if not conversation_history or not pitch_text:
+        if not conversation_history or not pitch_object:
             return func.HttpResponse(
                 json.dumps({"error": "'history' and 'pitch' are required fields."}),
                 status_code=400,
