@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('div.sticky ul a');
 
     // --- State ---
+    const foundersKey = 'ycAppFounders'; // Key for local storage
+    let founders = [];
     let conversationHistory = [];
     let originalPitch = {};
     let round = 0;
@@ -21,8 +23,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Initial Setup ---
+    initializeFounders();
     setupCountdown();
     setupScrollSpy();
+    document.getElementById('add-cofounder-btn').addEventListener('click', addFounder);
+
+    // --- Founder Management ---
+    function initializeFounders() {
+        const storedFounders = localStorage.getItem(foundersKey);
+        if (storedFounders) {
+            founders = JSON.parse(storedFounders);
+        } else {
+            // Start with one default founder if none exist
+            founders = [{ id: Date.now(), name: '', status: 'incomplete' }];
+            localStorage.setItem(foundersKey, JSON.stringify(founders));
+        }
+        renderFounderList();
+    }
+
+    function renderFounderList() {
+        const founderListEl = document.getElementById('founder-list');
+        if (!founderListEl) return;
+        founderListEl.innerHTML = ''; // Clear existing list
+
+        founders.forEach(founder => {
+            const founderEl = document.createElement('div');
+            founderEl.className = 'p-4 border border-gray-200 rounded-md bg-white flex justify-between items-center';
+            
+            const isComplete = founder.name && founder.linkedin; // Simple check for completion
+            const statusClass = isComplete ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+            const statusText = isComplete ? 'Profile complete' : 'Profile incomplete';
+
+            founderEl.innerHTML = `
+                <div>
+                    <p class="font-semibold">${founder.name || 'New Founder'}</p>
+                    <span class="text-xs ${statusClass} px-2 py-1 rounded-full">${statusText}</span>
+                </div>
+                <a href="founder-profile.html?id=${founder.id}" class="text-sm text-orange-600 border border-orange-400 rounded-full px-3 py-1 hover:bg-orange-50">Complete my profile &rarr;</a>
+            `;
+            founderListEl.appendChild(founderEl);
+        });
+    }
+
+    function addFounder() {
+        const newFounder = { id: Date.now(), name: '', status: 'incomplete' };
+        founders.push(newFounder);
+        localStorage.setItem(foundersKey, JSON.stringify(founders));
+        // Redirect to the new profile page
+        window.location.href = `founder-profile.html?id=${newFounder.id}`;
+    }
 
     // --- Countdown Timer --- 
     function setupCountdown() {
@@ -72,6 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(pitchForm);
         originalPitch = Object.fromEntries(formData.entries());
+
+        // Append founder data to the pitch
+        originalPitch.founders = founders;
         console.log('DEBUG: Original pitch data collected:', originalPitch);
 
         try {
