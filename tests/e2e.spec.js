@@ -1,13 +1,12 @@
 const { test, expect } = require('@playwright/test');
 
-// The base URL of the deployed application
-const APP_URL = 'https://proud-flower-00c82870f.1.azurestaticapps.net/';
+
 
 test.describe('YC Coach - Core Functionality', () => {
 
     test('should load the main page and have an empty founder list', async ({ page }) => {
         // Navigate to the live application
-        await page.goto(APP_URL);
+        await page.goto('/');
 
         // 1. Check if the page title is correct
         await expect(page).toHaveTitle(/YC Application Coach/);
@@ -27,7 +26,7 @@ test.describe('YC Coach - Core Functionality', () => {
 
     test('should allow adding and editing a founder', async ({ page }) => {
         // Navigate to the live application
-        await page.goto(APP_URL);
+        await page.goto('/');
 
         // 1. Add a new co-founder
         await page.getByRole('button', { name: '+ Add a co-founder' }).click();
@@ -53,7 +52,7 @@ test.describe('YC Coach - Core Functionality', () => {
         await page.getByRole('button', { name: 'Save and Go to Main Page' }).click();
 
         // 7. Verify the user is back on the main page and the name is updated
-        await expect(page).toHaveURL(APP_URL);
+        await expect(page).toHaveURL('/');
         await expect(founderList.getByText(founderName)).toBeVisible();
     });
 
