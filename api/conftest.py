@@ -1,9 +1,9 @@
 import pytest
 import os
 
+# This fixture runs before any tests.
 @pytest.fixture(scope="session", autouse=True)
-def set_test_environment():
-    """This fixture runs automatically for the entire test session.
-    It sets necessary environment variables before any tests are collected.
-    """
-    os.environ["OPENAI_API_KEY"] = "DUMMY_KEY_FOR_TESTING"
+def set_dummy_openai_api_key():
+    """Set a dummy OpenAI API key for testing purposes if one is not already set."""
+    if "OPENAI_API_KEY" not in os.environ:
+        os.environ["OPENAI_API_KEY"] = "DUMMY_KEY_FOR_TESTING"
