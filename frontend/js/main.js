@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveFounders = (founders) => localStorage.setItem('founders', JSON.stringify(founders));
 
     const renderFounders = () => {
-        const founders = JSON.parse(localStorage.getItem('founders')) || [];
+        const founders = getFounders();
         founderList.innerHTML = ''; // Clear previous content
         if (founders.length === 0) {
             founderList.innerHTML = '<p class="text-gray-500">No co-founders have been added yet.</p>';
@@ -16,10 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const founderEl = document.createElement('div');
                 founderEl.className = 'founder-item flex justify-between items-center p-3 bg-white border border-gray-200 rounded-md';
                 founderEl.innerHTML = `
-                    <div>
+                    <div class="flex-grow">
                         <p class="font-semibold">${founder.name || `Founder ${founder.id}`}</p>
                     </div>
-                    <a href="founder-profile.html?id=${founder.id}" class="text-sm font-semibold text-orange-600 hover:underline">Edit Profile</a>
+                    <div class="flex items-center space-x-4">
+                        <a href="founder-profile.html?id=${founder.id}" class="text-sm font-semibold text-orange-600 hover:underline">Edit Profile</a>
+                        <button data-id="${founder.id}" class="delete-founder-btn text-sm font-semibold text-red-600 hover:underline">Delete</button>
+                    </div>
                 `;
                 founderList.appendChild(founderEl);
             });
@@ -37,11 +40,25 @@ document.addEventListener('DOMContentLoaded', () => {
         renderFounders();
     };
 
+    const deleteFounder = (founderId) => {
+        let founders = getFounders();
+        founders = founders.filter(founder => founder.id !== founderId);
+        saveFounders(founders);
+        renderFounders();
+    };
+
     // Initial setup
     if (addCofounderBtn) {
         addCofounderBtn.addEventListener('click', addCofounder);
     }
     
+    founderList.addEventListener('click', (event) => {
+        if (event.target.classList.contains('delete-founder-btn')) {
+            const founderId = parseInt(event.target.getAttribute('data-id'), 10);
+            deleteFounder(founderId);
+        }
+    });
+
     // Ensure the list is empty on first load for a clean slate, then render.
     if (!localStorage.getItem('foundersInitialized')) {
         localStorage.setItem('founders', JSON.stringify([]));
