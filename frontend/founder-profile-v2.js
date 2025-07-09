@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const profileKey = 'founderProfile-v3'; // New key to ensure fresh start
+    localStorage.removeItem(profileKey); // Always start with a clean slate
     let profileData = {};
 
     // --- FORM RESET --- 
