@@ -9,7 +9,7 @@
       "methods": [
         "post"
       ],
-      "route": "login_user"
+      "route": "signup_user"
     },
     {
       "type": "http",
@@ -18,11 +18,11 @@
     },
     {
       "type": "cosmosDB",
-      "direction": "in",
-      "name": "docs",
+      "direction": "out",
+      "name": "doc",
       "databaseName": "YC-Coach-DB",
       "collectionName": "Users",
-      "sqlQuery": "SELECT * FROM c WHERE c.email = {email}",
+      "createIfNotExists": "true",
       "connectionStringSetting": "CosmosDbConnectionString"
     }
   ]

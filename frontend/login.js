@@ -1,46 +1,75 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
+    const formTitle = document.getElementById('form-title');
+    const submitButton = document.getElementById('submit-button');
+    const toggleText = document.getElementById('toggle-text');
+
+    let isLoginMode = true;
+
+    function setupToggleLink() {
+        const toggleLink = document.getElementById('toggle-link');
+        toggleLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            isLoginMode = !isLoginMode;
+            updateFormUI();
+        });
+    }
+
+    function updateFormUI() {
+        if (isLoginMode) {
+            formTitle.textContent = 'Login to Your Account';
+            submitButton.textContent = 'Login';
+            toggleText.innerHTML = `Don't have an account? <a href="#" id="toggle-link" class="font-medium text-orange-600 hover:text-orange-500">Sign up</a>`;
+        } else {
+            formTitle.textContent = 'Create a New Account';
+            submitButton.textContent = 'Sign Up';
+            toggleText.innerHTML = `Already have an account? <a href="#" id="toggle-link" class="font-medium text-orange-600 hover:text-orange-500">Login</a>`;
+        }
+        setupToggleLink();
+    }
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const submitButton = loginForm.querySelector('button[type="submit"]');
+        
+        const endpoint = isLoginMode ? '/api/login_user' : '/api/signup_user';
+        const actionText = isLoginMode ? 'Logging in...' : 'Signing up...';
 
-        // Disable button and show loading state
         submitButton.disabled = true;
-        submitButton.textContent = 'Logging in...';
+        submitButton.textContent = actionText;
 
         try {
-            const response = await fetch('/api/login_user', {
+            const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
             });
 
             const result = await response.json();
 
             if (response.ok) {
-                console.log('Login successful:', result);
-                // For now, we'll just log the success message.
-                // In the future, we'll handle session tokens and redirection here.
                 alert(result.message);
-                window.location.href = '/index.html'; // Redirect to main page on success
+                if (isLoginMode) {
+                    window.location.href = '/index.html';
+                } else {
+                    // Switch to login mode after successful signup
+                    isLoginMode = true;
+                    updateFormUI();
+                }
             } else {
-                console.error('Login failed:', result);
                 alert(`Error: ${result.message || 'An unknown error occurred.'}`);
             }
-
         } catch (error) {
-            console.error('An error occurred during login:', error);
-            alert('An error occurred. Please check the console for details.');
+            console.error('Error during form submission:', error);
+            alert('An error occurred. Please try again.');
         } finally {
-            // Re-enable button
             submitButton.disabled = false;
-            submitButton.textContent = 'Login';
+            updateFormUI(); // Reset button text and link
         }
     });
+
+    // Initial setup
+    updateFormUI();
 });
