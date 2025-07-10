@@ -31,11 +31,45 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Founder Management ---
     function initializeFounders() {
         const storedFounders = localStorage.getItem(foundersKey);
-        if (storedFounders) {
+        // Check if there's meaningful data, not just an empty array string '[]'
+        if (storedFounders && storedFounders.length > 2) { 
             founders = JSON.parse(storedFounders);
         } else {
-            // Start with one default founder if none exist
-            founders = [{ id: Date.now(), name: '', status: 'incomplete' }];
+            // Start with two default co-founders for testing
+            founders = [
+                {
+                    id: 1,
+                    name: 'Alex Chen',
+                    title: 'CEO & Lead Engineer',
+                    email: 'alex.chen@example.com',
+                    equity: '50',
+                    technical: 'Yes',
+                    linkedin: 'https://linkedin.com/in/alexchen-mock',
+                    status: 'complete',
+                    education: [
+                        { id: 1, school: 'Stanford University', degree: 'M.S. in Computer Science', 'edu-dates': '2018 - 2020' }
+                    ],
+                    work: [
+                        { id: 1, 'company-title': 'Google / Software Engineer', 'work-dates': '2020 - 2024' }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: 'Brenda Smith',
+                    title: 'COO & Head of Sales',
+                    email: 'brenda.smith@example.com',
+                    equity: '50',
+                    technical: 'No',
+                    linkedin: 'https://linkedin.com/in/brendasmith-mock',
+                    status: 'complete',
+                    education: [
+                        { id: 1, school: 'Harvard Business School', degree: 'MBA', 'edu-dates': '2017 - 2019' }
+                    ],
+                    work: [
+                        { id: 1, 'company-title': 'McKinsey & Company / Business Analyst', 'work-dates': '2019 - 2024' }
+                    ]
+                }
+            ];
             localStorage.setItem(foundersKey, JSON.stringify(founders));
         }
         renderFounderList();
