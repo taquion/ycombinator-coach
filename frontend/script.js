@@ -31,32 +31,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Mock Business Info ---
     function initializeBusinessInfo() {
+        // Company
         document.getElementById('startupName').value = 'Innovate AI';
+        document.getElementById('oneLiner').value = 'AI-powered customer support automation for SaaS.';
         document.getElementById('companyUrl').value = 'https://innovateai.dev';
         document.getElementById('productLink').value = 'https://demo.innovateai.dev';
-        document.getElementById('locationDecision').value = 'Yes, we are open to moving to the Bay Area.';
-        
-        document.getElementById('progressStatus').value = 'Launched';
-        document.getElementById('users').value = 'We have 10 beta users and positive feedback.';
-        document.getElementById('revenue').value = 'We are pre-revenue, focusing on user acquisition.';
+        document.getElementById('productDescription').value = 'High-growth SaaS companies struggle with scaling customer support, leading to high costs and slow response times. Our platform provides a trainable AI chatbot that resolves over 80% of common support queries instantly, freeing up human agents for complex issues.';
+        document.getElementById('locationDecision').value = 'We are a remote-first team but are open to moving to the Bay Area for the duration of the program.';
+
+        // Progress
+        document.getElementById('progressStatus').value = 'We have launched our MVP and onboarded 10 beta users who are providing regular feedback. We are seeing a 75% weekly retention rate among active users.';
+        document.querySelector('input[name="users"][value="yes"]').checked = true;
+        document.querySelector('input[name="revenue"][value="no"]').checked = true;
         document.getElementById('accelerators').value = 'None';
-        
-        document.getElementById('oneLiner').value = 'AI-powered customer support automation for SaaS businesses.';
-        document.getElementById('problem').value = 'High-growth SaaS companies struggle with scaling customer support, leading to high costs and slow response times.';
-        document.getElementById('solution').value = 'Our platform provides a trainable AI chatbot that resolves over 80% of common support queries instantly, freeing up human agents for complex issues.';
-        document.getElementById('targetMarket').value = 'Mid-stage B2B SaaS companies with 50-500 employees.';
-        document.getElementById('howToGetUsers').value = 'Direct sales outreach and content marketing focused on customer support best practices.';
-        document.getElementById('category').value = 'B2B SaaS';
-        document.getElementById('otherIdeas').value = 'We also considered a version for e-commerce, but SaaS is our primary focus.';
-        
-        document.getElementById('legalEntity').value = 'Delaware C-Corp';
-        document.getElementById('investment').value = 'We have not taken any investment yet.';
-        document.getElementById('fundraising').value = 'No';
-        
-        document.getElementById('whyYc').value = 'We believe YC\'s network and mentorship are unparalleled and will be critical for our growth.';
-        document.getElementById('howHeard').value = 'Through the YC blog and podcasts.';
-        document.getElementById('technicalWork').value = 'Alex is responsible for all backend development and AI model integration. Brenda handles frontend UI/UX and business logic implementation.';
-        document.getElementById('lookingForCofounder').value = 'No';
+
+        // Idea
+        document.getElementById('category').value = 'B2B';
+        document.getElementById('otherIdeas').value = 'We also considered a version for e-commerce, but SaaS is our primary focus due to our team\'s background.';
+
+        // Equity
+        document.querySelector('input[name="legalEntity"][value="yes"]').checked = true;
+        document.querySelector('input[name="investment"][value="no"]').checked = true;
+        document.querySelector('input[name="fundraising"][value="no"]').checked = true;
+
+        // Curious
+        document.getElementById('whyYc').value = 'We believe YC\'s network and mentorship are unparalleled and will be critical for helping us scale our sales strategy and product.';
+        document.getElementById('howHeard').value = 'Through the YC blog, podcasts, and several YC alumni who recommended we apply.';
+
+        // Founders Section Textareas
+        document.querySelector('textarea[name="technicalWork"]').value = 'Alex is responsible for all backend development and AI model integration. Brenda handles frontend UI/UX and business logic implementation.';
+        document.querySelector('textarea[name="lookingForCofounder"]').value = 'No, our founding team is set.';
     }
 
     // --- Founder Management ---
