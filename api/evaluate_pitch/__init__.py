@@ -97,14 +97,14 @@ First, analyze the user's pitch against the rubric provided below. For each 'Are
 After your evaluation, formulate ONE concise, thought-provoking question that targets the weakest area of the pitch. This question should prompt the founder to provide more specific information or think more deeply about a critical aspect of their business.
 
 Your response MUST be a JSON object with two keys:
-1.  `evaluation`: An array of objects, where each object has two keys: `area` (the name of the rubric area) and `rating` (the category you selected, e.g., 'Strong').
-2.  `first_question`: A string containing the single follow-up question.
+1.  `evaluation`: An array of objects, where each object has three keys: `area` (the name of the rubric area), `rating` (the category you selected, e.g., 'Strong'), and `feedback` (a concise, one-sentence explanation for the rating, providing specific, actionable advice).
+2.  `first_question`: A string containing the single follow-up question that targets the weakest area.
 
 Example JSON output:
 {{
   "evaluation": [
     {{ "area": "Founders & Team", "rating": "Strong" }},
-    {{ "area": "Idea & Domain", "rating": "Basic" }}
+    {{ "area": "Idea & Domain", "rating": "Basic", "feedback": "The problem you're solving is clear, but your target market seems too broad; narrowing your focus to a specific customer segment could strengthen your pitch." }}
   ],
   "first_question": "You mentioned your team has experience from top tech companies, but can you be more specific about what projects they led that are directly relevant to the challenges your startup will face?"
 }}

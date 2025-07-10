@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const result = await response.json();
             console.log('DEBUG: Successfully parsed JSON response:', result);
-            startConversation(result.first_question);
+            startConversation(result.evaluation, result.first_question);
 
         } catch (error) {
             console.error('DEBUG: CATCH block - Error during fetch:', error);
@@ -255,12 +255,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Conversation Logic ---
-    function startConversation(firstQuestion) {
-        console.log('DEBUG: Starting conversation');
+    function startConversation(evaluation, firstQuestion) {
+        console.log('DEBUG: Starting conversation with evaluation:', evaluation);
         round = 1;
+
+        // Create and display the evaluation table
+        const evaluationHtml = `
+            <div class="mb-6 p-4 border rounded-lg bg-gray-50">
+                <h4 class="text-md font-semibold text-gray-700 mb-3">Initial Pitch Evaluation:</h4>
+                <div class="space-y-3">
+                    ${evaluation.map(item => `
+                        <div class="p-3 border-l-4 ${getRatingColor(item.rating)} bg-white rounded-r-lg">
+                            <p class="font-semibold text-gray-800">${item.area}: <span class="font-normal text-gray-600">${item.rating}</span></p>
+                            <p class="text-sm text-gray-500 mt-1">${item.feedback}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        conversationDiv.innerHTML += evaluationHtml;
+
+        // Display the first question
         updateConversationUI(firstQuestion, 'assistant');
         conversationHistory.push({ role: 'assistant', content: firstQuestion });
         addUserInput();
+    }
+
+    function getRatingColor(rating) {
+        switch (rating) {
+            case 'YC-Ready': return 'border-green-500';
+            case 'Strong': return 'border-blue-500';
+            case 'Basic': return 'border-yellow-500';
+            case 'Not-Ready': return 'border-red-500';
+            default: return 'border-gray-300';
+        }
     }
 
     function addUserInput() {
