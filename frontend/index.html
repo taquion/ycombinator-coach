@@ -18,6 +18,10 @@
           <p class="text-xs text-gray-500">This is a community project <em>not</em> affiliated to YC</p>
         </div>
       </div>
+      <div>
+        <a href="login.html" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-orange-600">Login</a>
+        <a href="login.html" class="ml-2 px-4 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md hover:bg-orange-600">Sign Up</a>
+      </div>
     </header>
 
     <!-- Body Content -->
@@ -65,13 +69,19 @@
           <!-- Founder Video Section -->
           <div id="founder-video">
             <h2 class="text-xl font-bold border-b pb-2">Founder Video</h2>
-            <div class="mt-4 space-y-2">
-              <p class="text-sm font-medium">Please record a one minute video introducing the founder(s).*</p>
-              <p class="text-sm text-gray-500">Make sure the file does not exceed 100 MB. Read more about the video <a href="#" class="text-orange-600 underline">here</a>.</p>
-              <div class="mt-2 flex justify-center items-center w-full h-32 border-2 border-dashed border-gray-300 rounded-md bg-white">
-                <div class="text-center">
-                  <svg class="mx-auto h-10 w-10 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                  <p class="mt-1 text-sm text-gray-600">Drop here or <button type="button" class="font-semibold text-orange-600">browse</button></p>
+            <div class="mt-4 p-6 bg-white border border-gray-200 rounded-lg">
+              <p class="text-sm font-medium">Please record a one-minute video introducing the founder(s).*</p>
+              <p class="text-sm text-gray-500 mb-4">Make sure the file does not exceed 100 MB. Read more about the video <a href="#" class="text-orange-600 underline">here</a>.</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <!-- Video Player Placeholder -->
+                <div class="w-full bg-black aspect-video rounded-md flex items-center justify-center">
+                    <p class="text-white text-sm">Video player placeholder</p>
+                </div>
+                <!-- Upload Area -->
+                <div id="video-upload-container" class="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                    <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    <p class="text-sm text-gray-600">Drop your video here or <button type="button" class="font-semibold text-orange-600 hover:text-orange-700">browse files</button></p>
+                    <p class="text-xs text-gray-400 mt-1">MP4, MOV, or AVI, max 100MB</p>
                 </div>
               </div>
             </div>
