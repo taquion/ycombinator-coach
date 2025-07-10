@@ -73,6 +73,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Merge form data into our founder object (preserves education/work arrays)
         Object.assign(currentFounder, mainProfileData);
 
+        // Mark the profile as complete if the required fields are filled
+        if (currentFounder.name && currentFounder.email) {
+            currentFounder.status = 'complete';
+        }
+
         const founderIndex = founders.findIndex(f => f.id === currentFounder.id);
         if (founderIndex !== -1) {
             founders[founderIndex] = currentFounder;
