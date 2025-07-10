@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
-            founderList.appendChild(founderCard);
+            founderListEl.appendChild(founderCard);
         });
 
         // Add event listeners for the new delete buttons
