@@ -83,12 +83,24 @@ document.addEventListener('DOMContentLoaded', () => {
         renderFounderList();
     }
 
-    function addFounder() {
-        const newFounder = { id: Date.now(), name: '', status: 'incomplete' };
+        function addFounder() {
+        const newFounder = { 
+            id: Date.now(), 
+            name: '', 
+            status: 'incomplete',
+            education: [], // Ensure these are initialized
+            work: []
+        };
+
+        // Add to the main list and save to local storage
         founders.push(newFounder);
         localStorage.setItem(foundersKey, JSON.stringify(founders));
+
+        // Also save the specific new founder to session storage to avoid race conditions
+        sessionStorage.setItem('newFounderProfile', JSON.stringify(newFounder));
+
         // Redirect to the new profile page
-        window.location.href = `founder-profile.html?id=${newFounder.id}`;
+        window.location.href = `founder-profile.html?id=${newFounder.id}&new=true`;
     }
 
     // --- Countdown Timer --- 

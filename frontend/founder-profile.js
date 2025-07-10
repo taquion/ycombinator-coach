@@ -12,13 +12,27 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentFounder = null;
 
     // --- INITIALIZATION ---
-    function initialize() {
-        const storedFounders = localStorage.getItem(foundersKey);
-        founders = storedFounders ? JSON.parse(storedFounders) : [];
-        
+        function initialize() {
         const urlParams = new URLSearchParams(window.location.search);
         const founderId = parseInt(urlParams.get('id'), 10);
-        currentFounder = founders.find(f => f.id === founderId);
+        const isNew = urlParams.get('new') === 'true';
+
+        const storedFounders = localStorage.getItem(foundersKey);
+        founders = storedFounders ? JSON.parse(storedFounders) : [];
+
+        if (isNew) {
+            // If it's a new founder, get data from session storage to avoid race condition
+            const newFounderData = sessionStorage.getItem('newFounderProfile');
+            if (newFounderData) {
+                currentFounder = JSON.parse(newFounderData);
+                sessionStorage.removeItem('newFounderProfile'); // Clean up
+            } else {
+                 // Fallback to local storage just in case
+                currentFounder = founders.find(f => f.id === founderId);
+            }
+        } else {
+            currentFounder = founders.find(f => f.id === founderId);
+        }
 
         if (!currentFounder) {
             console.error('FATAL: Could not identify current founder. Redirecting.');
@@ -26,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Ensure education/work arrays exist
+        // Ensure education/work arrays exist, especially for older data
         if (!currentFounder.education) currentFounder.education = [];
         if (!currentFounder.work) currentFounder.work = [];
 
