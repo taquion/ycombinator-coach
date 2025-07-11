@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.textContent = 'Login';
             toggleText.innerHTML = `Don't have an account? <a href="#" id="toggle-link" class="font-medium text-orange-600 hover:text-orange-500">Sign up</a>`;
         } else {
-            formTitle.textContent = 'Create a New Account';
+            formTitle.textContent = 'Create Account';
             submitButton.textContent = 'Sign Up';
             toggleText.innerHTML = `Already have an account? <a href="#" id="toggle-link" class="font-medium text-orange-600 hover:text-orange-500">Login</a>`;
         }
