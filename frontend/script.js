@@ -231,7 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             console.log('DEBUG: Sending request to /api/evaluate_pitch...');
-            const response = await fetch('/api/evaluate_pitch', {
+            const API_BASE_URL = 'https://ycoach-api-prod.azurewebsites.net';
+    const response = await fetch(`${API_BASE_URL}/api/evaluate_pitch`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(originalPitch),
@@ -315,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (round < maxRounds) {
             round++;
             try {
-                const response = await fetch('/api/refine_pitch', {
+                const response = await fetch(`${API_BASE_URL}/api/refine_pitch`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ history: conversationHistory, pitch: originalPitch }),
@@ -336,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function generateFinalSummary() {
         try {
-            const response = await fetch('/api/generate_summary', {
+            const response = await fetch(`${API_BASE_URL}/api/generate_summary`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ history: conversationHistory, pitch: originalPitch }),
