@@ -31,3 +31,4 @@ jobs:
           api_location: "api" # API source code path - optional
           output_location: "" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+          # Trigger re-evaluation of the deployment configuration.
