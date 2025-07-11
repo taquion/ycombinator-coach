@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.textContent = 'Login';
             toggleText.innerHTML = `Don't have an account? <a href="#" id="toggle-link" class="font-medium text-orange-600 hover:text-orange-500">Sign up</a>`;
         } else {
-            formTitle.textContent = 'Create Account';
+            formTitle.textContent = 'Create a newAccount';
             submitButton.textContent = 'Sign Up';
             toggleText.innerHTML = `Already have an account? <a href="#" id="toggle-link" class="font-medium text-orange-600 hover:text-orange-500">Login</a>`;
         }
@@ -50,16 +50,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (response.ok) {
+                const result = await response.json();
+                console.log('[DEBUG] Signup/Login successful:', result);
                 alert(result.message);
                 if (isLoginMode) {
                     window.location.href = '/index.html';
                 } else {
-                    // Switch to login mode after successful signup
                     isLoginMode = true;
                     updateFormUI();
                 }
             } else {
-                alert(`Error: ${result.message || 'An unknown error occurred.'}`);
+                // If response is not OK, read as text to avoid JSON parsing errors
+                const errorText = await response.text();
+                console.error(`[DEBUG] Server error response (status ${response.status}):`, errorText);
+                alert(`Server Error: ${errorText}`);
             }
         } catch (error) {
             console.error('Error during form submission:', error);
