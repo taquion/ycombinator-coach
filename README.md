@@ -71,30 +71,31 @@ An AI-powered tool that helps startup founders create and refine their Y Combina
 
 4. Open `http://localhost:8000` in your browser.
 
-## Deployment
+## Azure Architecture & Deployment
 
-### Azure Static Web App (Frontend)
+This project is deployed on Azure as a single, unified **Azure Static Web App**. This service automatically hosts the frontend and manages the serverless API functions. Deployment is handled automatically by a GitHub Actions workflow (`.github/workflows/azure-static-web-apps.yml`) whenever changes are pushed to the `main` branch.
 
-1. Push your code to a GitHub repository
-2. Create a new Static Web App in Azure Portal
-3. Connect to your GitHub repository
-4. Configure build settings:
-   - App location: `frontend`
-   - App artifact location: `frontend`
-   - API location: `backend`
+The architecture consists of:
 
-### Azure Functions (Backend)
+-   **Azure Static Web Apps:** Hosts the frontend (`/frontend`) and the serverless API (`/api`).
+    -   **App Name:** `ycoach-v2`
+    -   **Resource Group:** `YCPitchCoachSWA`
+-   **Azure Functions:** Provides the backend logic for user authentication.
+    -   `signup_user`: Handles new user registration.
+    -   `login_user`: Handles user login.
+-   **Azure Cosmos DB:** A NoSQL database used to store user data.
+    -   **Account:** `ycom-db`
+    -   **Database:** `YC-Coach-DB`
+    -   **Container:** `Users`
 
-1. Create a new Function App in Azure Portal
-2. Set the runtime stack to Python
-3. Add your OpenAI API key in Configuration > Application settings
-4. Deploy your function using Azure Functions Core Tools or GitHub Actions
+## Environment Variables & Secrets
 
-## Environment Variables
+The deployment requires the following to be configured as **secrets in the GitHub repository** and as **Application Settings in the Azure Static Web App**:
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `OPENAI_API_KEY` | Your OpenAI API key | Yes |
+| Variable                  | Description                                | Required |
+| ------------------------- | ------------------------------------------ | -------- |
+| `OPENAI_API_KEY`          | Your OpenAI API key                        | Yes      |
+| `CosmosDbConnectionString`| The connection string for the Cosmos DB    | Yes      |
 
 ## Development Roadmap
 

@@ -42,3 +42,54 @@
 - Working on initial project setup
 - Setting up basic file structure
 - Implementing core functionality
+
+---
+
+## Project Handover & Next Steps (As of 2025-07-10)
+
+This section outlines the current state of the YC Pitch Coach application, the Azure architecture, and the immediate steps required to resolve the final bug in the user signup functionality.
+
+**1. Project Goal**
+To create a web application that helps YC applicants practice their pitches, with user authentication and AI-powered feedback.
+
+**2. Current Status**
+- The frontend UI is built and deployed.
+- The backend API consists of two Azure Functions: `login_user` and `signup_user`.
+- The `login_user` function is correctly configured and should work once a user is successfully created.
+- The `signup_user` function is failing due to a deployment issue. A critical one-word fix has been made locally but is not being pushed to GitHub.
+
+**3. The Core Problem: Git Deployment Failure**
+The root cause of the signup error is a mismatch between the Azure Function's configuration and its Python code.
+- **File:** `api/signup_user/function.json`
+- **Binding Name:** The Cosmos DB output is named `"doc"`.
+- **File:** `api/signup_user/__init__.py`
+- **Parameter Name:** The corresponding function parameter was incorrectly named `newUser`.
+
+**The fix was to change the function signature in `__init__.py` to use `doc`:**
+`def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:`
+
+However, the developer's local Git client is not detecting this change, preventing it from being committed and deployed. All attempts to force Git to recognize the change have failed.
+
+**4. Immediate Next Steps for Resolution**
+The highest priority is to get the corrected `__init__.py` file deployed.
+1.  **Clone a Fresh Copy:** To bypass the local Git issue, clone the repository into a new, clean folder:
+    `git clone https://github.com/taquion/ycombinator-coach.git new-project-folder`
+2.  **Apply the Fix Manually:** In the new folder, open `api/signup_user/__init__.py` and make the one-word change to the function signature (from `newUser` to `doc`).
+3.  **Deploy the Fix:** Commit and push the change.
+    ```bash
+    git add api/signup_user/__init__.py
+    git commit -m "Fix: Correct signup function parameter"
+    git push
+    ```
+4.  **Verify:** Once the GitHub Action completes, the signup functionality should work correctly.
+
+**5. Azure Architecture & Configuration**
+- **Resource Group:** `YCPitchCoachSWA`
+- **Static Web App:** `ycoach-v2` (URL: `proud-ocean-09d42040f.1.azurestaticapps.net`)
+- **Cosmos DB Account:** `ycom-db`
+- **Cosmos DB Database:** `YC-Coach-DB`
+- **Cosmos DB Container:** `Users` (Partition Key: `/id`)
+- **GitHub Secrets:** The repository requires the following secrets for deployment:
+  - `AZURE_STATIC_WEB_APPS_API_TOKEN`
+  - `CosmosDbConnectionString`
+  - `OPENAI_API_KEY`
