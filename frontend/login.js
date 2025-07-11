@@ -47,10 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email, password }),
             });
 
-            const result = await response.json();
+            // Always get the response body, regardless of status
+            const responseBody = await response.text();
 
             if (response.ok) {
-                const result = await response.json();
+                const result = JSON.parse(responseBody); // Manually parse since we read as text
                 console.log('[DEBUG] Signup/Login successful:', result);
                 alert(result.message);
                 if (isLoginMode) {
@@ -60,10 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateFormUI();
                 }
             } else {
-                // If response is not OK, read as text to avoid JSON parsing errors
-                const errorText = await response.text();
-                console.error(`[DEBUG] Server error response (status ${response.status}):`, errorText);
-                alert(`Server Error: ${errorText}`);
+                // The response is an error. The body is in 'responseBody'.
+                console.error(`[DEBUG] Server error response (status ${response.status}):`, responseBody);
+                // Try to parse as JSON for a structured error message, otherwise show raw text.
+                try {
+                    const errorJson = JSON.parse(responseBody);
+                    alert(`Server Error: ${errorJson.message || responseBody}`);
+                } catch (e) {
+                    alert(`Server Error: ${responseBody}`);
+                }
             }
         } catch (error) {
             console.error('Error during form submission:', error);

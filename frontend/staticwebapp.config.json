@@ -3,6 +3,8 @@
     "apiRuntime": "python:3.9"
   },
   "globalHeaders": {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
     "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
   },
   "routes": [
