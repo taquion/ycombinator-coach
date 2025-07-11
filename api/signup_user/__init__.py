@@ -3,8 +3,32 @@ import json
 import azure.functions as func
 import bcrypt
 import uuid
+import os
 
 def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:
+    logging.info('--- Signup function invoked ---')
+
+    # === START DEBUGGING CODE ===
+    try:
+        conn_str = os.environ.get('CosmosDbConnectionString')
+        if conn_str:
+            # Do not log the actual key for security reasons, just confirm its presence and length.
+            logging.info(f"CosmosDbConnectionString found. Length: {len(conn_str)}")
+        else:
+            logging.warning('CosmosDbConnectionString is MISSING or empty.')
+            # Return a specific error if the key is missing
+            return func.HttpResponse(
+                "Service configuration error: Database connection is not set.",
+                status_code=500
+            )
+    except Exception as e:
+        logging.error(f"Error reading environment variable: {e}")
+        return func.HttpResponse(
+            "Service configuration error: Could not read settings.",
+            status_code=500
+        )
+    # === END DEBUGGING CODE ===
+
     logging.info('Python HTTP trigger function processed a signup request.')
 
     try:
