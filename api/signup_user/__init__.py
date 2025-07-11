@@ -5,7 +5,7 @@ import bcrypt
 import uuid
 import os
 
-def main(req: func.HttpRequest, newUser: func.Out[func.Document]) -> func.HttpResponse:
+def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:
     logging.info('--- Signup function invoked ---')
 
     # === START DEBUGGING CODE ===
