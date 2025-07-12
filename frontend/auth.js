@@ -14,27 +14,31 @@ function signOut() {
 // Function to update the UI based on authentication state
 function updateUI(account) {
     const welcomeDiv = document.getElementById("welcome-div");
-    if (welcomeDiv && account) {
-        // Construct the display name from the idTokenClaims
+    const userSessionControls = document.getElementById('user-session-controls');
+    let displayName = "unknown";
+
+    if (account) {
+        // User is signed in, calculate display name
         const claims = account.idTokenClaims;
         const firstName = claims.given_name || '';
         const lastName = claims.family_name || '';
-        const displayName = `${firstName} ${lastName}`.trim() || account.username;
+        displayName = `${firstName} ${lastName}`.trim() || account.username;
 
-        welcomeDiv.innerHTML = `Welcome, ${displayName}`;
-    }
-    const userSessionControls = document.getElementById('user-session-controls');
-
-    if (account) {
-        // User is signed in
         sessionStorage.setItem("msal_username", account.username); // Store username for logout
-        
+
+        // Update UI elements
+        if (welcomeDiv) {
+            welcomeDiv.innerHTML = `Welcome, ${displayName}`;
+        }
         userSessionControls.innerHTML = `
             <span class="text-sm text-gray-700">Welcome, ${displayName}</span>
             <button onclick="signOut()" class="ml-4 px-4 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md hover:bg-orange-600">Sign Out</button>
         `;
     } else {
         // User is not signed in
+        if (welcomeDiv) {
+            welcomeDiv.innerHTML = `Welcome, unknown`;
+        }
         userSessionControls.innerHTML = `
             <a href="login.html" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-orange-600">Login</a>
             <a href="login.html" class="ml-2 px-4 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md hover:bg-orange-600">Sign Up</a>
