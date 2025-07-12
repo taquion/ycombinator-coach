@@ -1,13 +1,7 @@
-
 const msalConfig = {
     auth: {
         clientId: "1f9e42ba-8de3-42a2-ab9f-0f72ac5474c0",
-        // Using the authority URL matching the working URL structure
-        authority: "https://ycoachapp.ciamlogin.com/ycoachapp.onmicrosoft.com/oauth2/v2.0",
-        // Add the B2C policy
-        policies: {
-            signUpSignIn: "b2c_1_susi_2"
-        },
+        authority: "https://ycoachapp.ciamlogin.com/ycoachapp.onmicrosoft.com/b2c_1_susi_2",
         knownAuthorities: ["ycoachapp.ciamlogin.com"],
         redirectUri: "https://polite-plant-0f3f4a41e.2.azurestaticapps.net", // Set exact redirect URI from Azure
     },
