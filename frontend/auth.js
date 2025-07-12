@@ -12,13 +12,11 @@ function signOut() {
 }
 
 // Function to update the UI based on authentication state
-function updateUI() {
+function updateUI(account) {
     const userSessionControls = document.getElementById('user-session-controls');
-    const accounts = msalInstance.getAllAccounts();
 
-    if (accounts.length > 0) {
+    if (account) {
         // User is signed in
-        const account = accounts[0];
         sessionStorage.setItem("msal_username", account.username); // Store username for logout
         
         // Use name if available, otherwise fallback to username
@@ -42,22 +40,33 @@ function updateUI() {
 function initializeAuth() {
     msalInstance.handleRedirectPromise().then(response => {
         if (response && response.account) {
-            // This is a fresh login, set the active account
-            console.log("Login redirect successfully handled.");
-            msalInstance.setActiveAccount(response.account);
-            updateUI();
+            return response.account;
         } else {
-            // This is not a fresh login, check for an existing session
-            const accounts = msalInstance.getAllAccounts();
-            if (accounts.length === 0) {
-                // No active session found, redirect to login page
+            const currentAccounts = msalInstance.getAllAccounts();
+            if (currentAccounts.length === 0) {
+                // No user is signed in, redirect to login page
                 console.log("No active session found. Redirecting to login.");
                 window.location.href = 'login.html';
+                return null;
             } else {
-                // An existing session was found, set the active account
-                msalInstance.setActiveAccount(accounts[0]);
-                updateUI();
+                return currentAccounts[0];
             }
+        }
+    }).then(account => {
+        if (account) {
+            msalInstance.setActiveAccount(account);
+            // Silently acquire token to get user's name from 'profile' scope
+            msalInstance.acquireTokenSilent({
+                ...tokenRequest,
+                account: account
+            }).then(response => {
+                // The response.account object now contains the user's name
+                updateUI(response.account);
+            }).catch(error => {
+                console.error("Silent token acquisition failed: ", error);
+                // Fallback to updating UI with whatever info we have
+                updateUI(account);
+            });
         }
     }).catch(err => {
         console.error(err);
