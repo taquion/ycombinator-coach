@@ -38,16 +38,19 @@ function updateUI() {
 }
 
 
-// Call updateUI when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    // Handle the redirect promise, which resolves when the page is loaded after a login
-    msalInstance.handleRedirectPromise().then((response) => {
-        // If a response is returned, it means the user has just logged in
-        // The account information is now in the cache
+// Main logic to run when the page loads
+function initializeAuth() {
+    const accounts = msalInstance.getAllAccounts();
+    if (accounts.length === 0) {
+        // No user is signed in, redirect to login page
+        console.log("No active session found. Redirecting to login.");
+        window.location.href = 'login.html';
+    } else {
+        // User is signed in, set the active account and update the UI
+        msalInstance.setActiveAccount(accounts[0]);
         updateUI();
-    }).catch(err => {
-        console.error(err);
-        // Even if there's an error, try to update the UI with the current state
-        updateUI();
-    });
-});
+    }
+}
+
+// Run the authentication check as soon as the DOM is ready
+document.addEventListener('DOMContentLoaded', initializeAuth);
