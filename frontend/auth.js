@@ -13,15 +13,22 @@ function signOut() {
 
 // Function to update the UI based on authentication state
 function updateUI(account) {
+    const welcomeDiv = document.getElementById("welcome-div");
+    if (welcomeDiv && account) {
+        // Construct the display name from the idTokenClaims
+        const claims = account.idTokenClaims;
+        const firstName = claims.given_name || '';
+        const lastName = claims.family_name || '';
+        const displayName = `${firstName} ${lastName}`.trim() || account.username;
+
+        welcomeDiv.innerHTML = `Welcome, ${displayName}`;
+    }
     const userSessionControls = document.getElementById('user-session-controls');
 
     if (account) {
         // User is signed in
         sessionStorage.setItem("msal_username", account.username); // Store username for logout
         
-        // Use name if available, otherwise fallback to username
-        const displayName = account.name || account.username.split('@')[0];
-
         userSessionControls.innerHTML = `
             <span class="text-sm text-gray-700">Welcome, ${displayName}</span>
             <button onclick="signOut()" class="ml-4 px-4 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md hover:bg-orange-600">Sign Out</button>
@@ -54,7 +61,6 @@ function initializeAuth() {
         }
     }).then(account => {
         if (account) {
-            console.log("Account object received:", account); // Diagnostic log
             console.log("Account is set, attempting to acquire token silently.");
             msalInstance.setActiveAccount(account);
             // Silently acquire token to get user's name from 'profile' scope
