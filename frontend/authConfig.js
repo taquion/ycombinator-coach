@@ -6,7 +6,7 @@
 const msalConfig = {
     auth: {
         clientId: "1f9e42ba-8de3-42a2-ab9f-0f72ac5474c0", // Client ID of your frontend app registration
-        authority: "https://ycoachapp.ciamlogin.com/ycoachapp.onmicrosoft.com/B2C_1_susi", // The full authority URL including the user flow
+        authority: "https://ycoachapp.ciamlogin.com/B2C_1_susi", // Correct authority for Entra External ID
         knownAuthorities: ["ycoachapp.ciamlogin.com"], // Mark the authority as a known domain
         redirectUri: window.location.origin, // Let MSAL handle the redirect URI dynamically
     },
