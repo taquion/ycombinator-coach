@@ -1,5 +1,6 @@
 azure-functions
 openai==0.28.1
+azure-cosmos==4.5.1
 bcrypt
 python-dotenv
 
