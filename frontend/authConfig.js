@@ -6,7 +6,7 @@
 const msalConfig = {
     auth: {
         clientId: "1f9e42ba-8de3-42a2-ab9f-0f72ac5474c0", // Client ID of your frontend app registration
-        authority: "https://ycoachapp.ciamlogin.com/ycoachapp.onmicrosoft.com/B2C_1_susi", // Specify the sign-up/sign-in user flow
+        authority: "https://ycoachapp.ciamlogin.com/ycoachapp.onmicrosoft.com/B2C_1_susi", // The full authority URL including the user flow
         knownAuthorities: ["ycoachapp.ciamlogin.com"], // Mark the authority as a known domain
         redirectUri: window.location.origin, // Let MSAL handle the redirect URI dynamically
     },
@@ -23,6 +23,5 @@ const msalConfig = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 const loginRequest = {
-    scopes: ["openid", "profile", "offline_access", "api://a67d445d-15a2-44cb-ae27-3a7ec862e699/access_as_user"]
+    scopes: ["openid", "profile", "offline_access", "api://1a8a64c8-4d5a-4426-82e3-2b2c01552599/access_as_user"]
 };
-
