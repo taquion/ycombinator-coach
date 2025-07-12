@@ -54,6 +54,8 @@ function initializeAuth() {
         }
     }).then(account => {
         if (account) {
+            console.log("Account object received:", account); // Diagnostic log
+            console.log("Account is set, attempting to acquire token silently.");
             msalInstance.setActiveAccount(account);
             // Silently acquire token to get user's name from 'profile' scope
             msalInstance.acquireTokenSilent({
