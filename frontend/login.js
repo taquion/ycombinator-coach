@@ -1,6 +1,4 @@
-// Create the main MSAL instance
-console.log("MSAL Config:", msalConfig);
-const msalInstance = new msal.PublicClientApplication(msalConfig);
+
 
 // Function to handle the login process
 function signIn() {

@@ -1,6 +1,6 @@
 // frontend/auth.js
 
-const msalInstance = new msal.PublicClientApplication(msalConfig);
+
 
 // Function to handle the logout process
 function signOut() {
