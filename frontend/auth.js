@@ -40,16 +40,30 @@ function updateUI() {
 
 // Main logic to run when the page loads
 function initializeAuth() {
-    const accounts = msalInstance.getAllAccounts();
-    if (accounts.length === 0) {
-        // No user is signed in, redirect to login page
-        console.log("No active session found. Redirecting to login.");
+    msalInstance.handleRedirectPromise().then(response => {
+        if (response && response.account) {
+            // This is a fresh login, set the active account
+            console.log("Login redirect successfully handled.");
+            msalInstance.setActiveAccount(response.account);
+            updateUI();
+        } else {
+            // This is not a fresh login, check for an existing session
+            const accounts = msalInstance.getAllAccounts();
+            if (accounts.length === 0) {
+                // No active session found, redirect to login page
+                console.log("No active session found. Redirecting to login.");
+                window.location.href = 'login.html';
+            } else {
+                // An existing session was found, set the active account
+                msalInstance.setActiveAccount(accounts[0]);
+                updateUI();
+            }
+        }
+    }).catch(err => {
+        console.error(err);
+        // Redirect to login on error as a fallback
         window.location.href = 'login.html';
-    } else {
-        // User is signed in, set the active account and update the UI
-        msalInstance.setActiveAccount(accounts[0]);
-        updateUI();
-    }
+    });
 }
 
 // Run the authentication check as soon as the DOM is ready
