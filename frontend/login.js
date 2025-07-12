@@ -19,15 +19,17 @@ function signOut() {
 // Handle the redirect promise when the page loads
 msalInstance.handleRedirectPromise()
     .then(response => {
-        if (response) {
+        if (response && response.account) {
+            console.log("Redirect promise handled successfully. Setting active account.");
+            msalInstance.setActiveAccount(response.account);
             console.log("Login successful! Redirecting to dashboard...");
-            // On successful login, redirect to the main page or dashboard
             window.location.href = '/index.html';
         } else {
-            // Check if there are any accounts in the cache
-            const accounts = msalInstance.getAllAccounts();
-            if (accounts.length > 0) {
+            // Fallback check for existing sessions
+            const currentAccounts = msalInstance.getAllAccounts();
+            if (currentAccounts.length > 0) {
                 console.log("User is already signed in. Redirecting...");
+                msalInstance.setActiveAccount(currentAccounts[0]);
                 window.location.href = '/index.html';
             }
         }
