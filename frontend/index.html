@@ -19,9 +19,9 @@
           <p class="text-xs text-gray-500">This is a community project <em>not</em> affiliated to YC</p>
         </div>
       </div>
-      <div>
+      <div id="user-session-controls" class="flex items-center">
+        <!-- This content will be dynamically updated by auth.js -->
         <a href="login.html" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-orange-600">Login</a>
-        <a href="login.html" class="ml-2 px-4 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md hover:bg-orange-600">Sign Up</a>
       </div>
     </header>
 
@@ -282,6 +282,12 @@
     </footer>
   </div>
   
+  <!-- MSAL and Authentication Scripts -->
+  <script src="https://alcdn.msauth.net/browser/2.14.2/js/msal-browser.min.js"></script>
+  <script src="authConfig.js"></script>
+  <script src="auth.js"></script>
+
+  <!-- Main Application Script -->
   <script src="script.js?v=2"></script>
 </body>
 </html>

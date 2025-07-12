@@ -1,9 +1,12 @@
 // Create the main MSAL instance
+console.log("MSAL Config:", msalConfig);
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
 // Function to handle the login process
 function signIn() {
+    console.log("Login Request:", loginRequest);
     msalInstance.loginRedirect(loginRequest).catch(e => {
+        console.error(`Login Error: ${e.errorCode} - ${e.errorMessage}`);
         console.error(e);
     });
 }
