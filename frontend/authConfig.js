@@ -17,5 +17,5 @@ const loginRequest = {
 };
 
 const tokenRequest = {
-    scopes: ["profile", "offline_access", "api://1a8a64c8-4d5a-4426-82e3-2b2c01552599/access_as_user"]
+    scopes: ["profile", "offline_access"]
 };
