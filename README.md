@@ -88,6 +88,40 @@ The architecture consists of:
     -   **Database:** `YC-Coach-DB`
     -   **Container:** `Users`
 
+## Authentication
+
+User authentication is handled using the Microsoft Authentication Library (MSAL.js) connecting to a **Microsoft Entra ID for Customers (CIAM)** tenant. This provides a secure sign-up and sign-in user flow.
+
+### MSAL Configuration (`frontend/authConfig.js`)
+
+The key to a successful integration is the correct configuration of the `authority` URL in the `msalConfig` object. After extensive debugging, the correct format was found to be:
+
+-   The main `authority` must point to the tenant domain, **without** the user flow/policy name in the path.
+-   The `loginRequest` object should **not** have its own `authority` property. Azure applies the correct user flow (e.g., `b2c_1_susi_2`) automatically based on the application's configuration in the Azure portal.
+
+Here is the correct structure:
+
+```javascript
+const msalConfig = {
+    auth: {
+        clientId: "YOUR_CLIENT_ID", // From Azure App Registration
+        authority: "https://ycoachapp.ciamlogin.com/ycoachapp.onmicrosoft.com/",
+        knownAuthorities: ["ycoachapp.ciamlogin.com"],
+        redirectUri: "YOUR_DEPLOYED_APP_URL/login.html",
+    },
+    cache: {
+        cacheLocation: "sessionStorage",
+        storeAuthStateInCookie: false,
+    }
+};
+
+const loginRequest = {
+    scopes: ["openid", "profile", "offline_access", "api://YOUR_API_ID/access_as_user"]
+};
+```
+
+**Note:** Any deviation from this `authority` structure, such as including the user flow in the path, will likely result in a `404 Not Found` error when MSAL tries to fetch the OpenID Connect metadata.
+
 ## Environment Variables & Secrets
 
 The deployment requires the following to be configured as **secrets in the GitHub repository** and as **Application Settings in the Azure Static Web App**:
