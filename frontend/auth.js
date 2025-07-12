@@ -5,11 +5,10 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 // Function to handle the logout process
 function signOut() {
     const account = msalInstance.getAccountByUsername(sessionStorage.getItem("msal_username"));
-    const logoutRequest = {
+    msalInstance.logoutRedirect({
         account: account,
         postLogoutRedirectUri: window.location.origin,
-    };
-    msalInstance.logoutRedirect(logoutRequest);
+    });
 }
 
 // Function to update the UI based on authentication state
