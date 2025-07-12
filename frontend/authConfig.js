@@ -6,8 +6,8 @@
 const msalConfig = {
     auth: {
         clientId: "1f9e42ba-8de3-42a2-ab9f-0f72ac5474c0", // Client ID of your frontend app registration
-        authority: "https://ycoachapp.ciamlogin.com/160bfa56-6c5b-4f65-b5ad-e5eea4a16197/b2c_1_susi_2", // Correct authority URL with correct Tenant ID and case-sensitive user flow
-        knownAuthorities: ["ycoachapp.ciamlogin.com", "https://ycoachapp.ciamlogin.com/160bfa56-6c5b-4f65-b5ad-e5eea4a16197/b2c_1_susi_2"], // Mark the authority as a known domain
+        authority: "https://160bfa56-6c5b-4f65-b5ad-e5eea4a16197.ciamlogin.com/160bfa56-6c5b-4f65-b5ad-e5eea4a16197/b2c_1_susi_2", // Correct authority URL with correct Tenant ID and case-sensitive user flow
+        knownAuthorities: ["160bfa56-6c5b-4f65-b5ad-e5eea4a16197.ciamlogin.com"], // Mark the authority as a known domain
         redirectUri: window.location.origin, // Let MSAL handle the redirect URI dynamically
     },
     cache: {
