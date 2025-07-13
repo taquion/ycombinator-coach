@@ -28,6 +28,36 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCountdown();
     setupScrollSpy();
     document.getElementById('add-cofounder-btn').addEventListener('click', addFounder);
+    restoreFormState(); // Restore form state on page load
+
+    // --- Form State Management ---
+    function saveFormState() {
+        const formData = new FormData(pitchForm);
+        const formObject = Object.fromEntries(formData.entries());
+        sessionStorage.setItem('formState', JSON.stringify(formObject));
+        console.log('DEBUG: Form state saved to sessionStorage.');
+    }
+
+    function restoreFormState() {
+        const savedState = sessionStorage.getItem('formState');
+        if (savedState) {
+            const formObject = JSON.parse(savedState);
+            for (const key in formObject) {
+                const element = pitchForm.elements[key];
+                if (element) {
+                    if (element.type === 'radio') {
+                        // Handle radio buttons
+                        document.querySelector(`input[name="${key}"][value="${formObject[key]}"]`).checked = true;
+                    } else {
+                        element.value = formObject[key];
+                    }
+                }
+            }
+            console.log('DEBUG: Form state restored from sessionStorage.');
+            // Optional: Clear the state after restoring to avoid re-populating on refresh
+            // sessionStorage.removeItem('formState'); 
+        }
+    }
 
     // --- Mock Business Info ---
     function initializeBusinessInfo() {
