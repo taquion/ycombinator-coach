@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
     <!-- Test commit for CI/CD pipeline -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,86 +7,266 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#f6f6ef] font-sans text-[#222]">
+    <!-- Test comment to trigger deployment -->
   <div class="w-full max-w-6xl mx-auto p-8">
     <!-- Header -->
     <header class="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
-      <div class="container mx-auto flex justify-between items-center">
-        <div class="flex items-center">
-          <img src="/assets/logo.svg" alt="YC Coach Logo" class="h-8 w-8 mr-2">
-          <h1 class="text-xl font-bold text-gray-800">Get Coaching on your YC Application</h1>
-        </div>
-        <div id="user-session-controls" class="flex items-center">
-          <!-- Auth buttons will be injected here by auth.js -->
+      <div class="flex items-center">
+        <img src="/assets/logo.png" alt="YC Coach Logo" class="h-10 w-10 mr-4">
+        <div>
+          <h1 class="text-2xl font-bold">Get Coaching on your YC Application</h1>
+          <p class="text-xs text-gray-500">This is a community project <em>not</em> affiliated to YC</p>
         </div>
       </div>
+      <div id="user-session-controls" class="flex items-center">
+            <span class="text-sm text-gray-700">Welcome, nader+prueba@datomicos.com</span>
+            <button onclick="signOut()" class="ml-4 px-4 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md hover:bg-orange-600">Sign Out</button>
+        </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main>
-      <!-- Main layout: Content + Sidebar -->
-      <div class="flex flex-row-reverse gap-8">
-        <!-- Sidebar -->
-        <aside class="w-1/4">
-          <div class="sticky top-8">
+    <!-- Body Content -->
+    <div class="flex flex-row-reverse gap-8">
+      <!-- Sidebar -->
+      <aside class="w-1/4">
+        <div class="sticky top-8">
             <div class="p-4 border border-gray-200 rounded-md bg-white">
-              <h4 class="font-bold text-sm">CONTENTS</h4>
-              <ul id="sidebar-nav" class="mt-3 space-y-2 text-sm">
-                <li><a href="#founders" class="text-orange-600 font-semibold">Founders</a></li>
-                <li><a href="#founder-video" class="hover:text-orange-600">Founder Video</a></li>
-                <li><a href="#company" class="hover:text-orange-600">Company</a></li>
-                <li><a href="#progress" class="hover:text-orange-600">Progress</a></li>
-                <li><a href="#idea" class="hover:text-orange-600">Idea</a></li>
-                <li><a href="#equity" class="hover:text-orange-600">Equity</a></li>
-                <li><a href="#curious" class="hover:text-orange-600">Curious</a></li>
-              </ul>
+                <h4 class="font-bold text-sm">CONTENTS</h4>
+                <ul id="sidebar-nav" class="mt-3 space-y-2 text-sm">
+                    <li><a href="#founders" class="text-orange-600 font-semibold">Founders</a></li>
+                    <li><a href="#founder-video" class="hover:text-orange-600">Founder Video</a></li>
+                    <li><a href="#company" class="hover:text-orange-600">Company</a></li>
+                    <li><a href="#progress" class="hover:text-orange-600">Progress</a></li>
+                    <li><a href="#idea" class="hover:text-orange-600">Idea</a></li>
+                    <li><a href="#equity" class="hover:text-orange-600">Equity</a></li>
+                    <li><a href="#curious" class="hover:text-orange-600">Curious</a></li>
+                </ul>
+            </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="w-3/4">
+        <form id="pitchForm" class="space-y-10">
+          <!-- Founders Section -->
+          <div id="founders">
+            <h2 class="text-xl font-bold border-b pb-2">Founders</h2>
+            <div id="founder-list" class="space-y-4 mt-4"></div>
+            <button type="button" id="add-cofounder-btn" class="mt-2 px-3 py-2 bg-orange-500 text-white text-sm font-semibold rounded-md hover:bg-orange-600">+ Add a co-founder</button>
+            <div class="mt-6 space-y-6">
+              <div>
+                <label class="block text-sm font-medium">Who writes code, or does other technical work on your product? Was any of it done by a non-founder? Please explain.</label>
+                <textarea name="technicalWork" rows="4" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium">Are you looking for a cofounder?</label>
+                <textarea name="lookingForCofounder" rows="2" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
             </div>
           </div>
-        </aside>
 
-        <!-- Content -->
-        <div class="w-3/4">
-          <form id="pitchForm" class="space-y-10">
-            
-            <!-- Founders Section -->
-            <section id="founders-container" class="mb-12">
-              <div id="founders">
-                <h2 class="text-xl font-bold border-b pb-2">Founders</h2>
-                <div id="founder-list" class="space-y-4 mt-4">
-                    <!-- Founder profiles will be dynamically inserted here -->
+          <!-- Founder Video Section -->
+          <div id="founder-video">
+            <h2 class="text-xl font-bold border-b pb-2">Founder Video</h2>
+            <div class="mt-4 p-6 bg-white border border-gray-200 rounded-lg">
+              <p class="text-sm font-medium">Please record a one-minute video introducing the founder(s).*</p>
+              <p class="text-sm text-gray-500 mb-4">Make sure the file does not exceed 100 MB. Read more about the video <a href="#" class="text-orange-600 underline">here</a>.</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <!-- Video Player Placeholder -->
+                <div class="w-full bg-black aspect-video rounded-md flex items-center justify-center">
+                    <p class="text-white text-sm">Video player placeholder</p>
                 </div>
-                <button type="button" id="add-cofounder-btn" class="mt-2 px-3 py-2 bg-orange-500 text-white text-sm font-semibold rounded-md hover:bg-orange-600">+ Add a co-founder</button>
-                <div class="mt-6 space-y-6">
-                  <div>
-                    <label class="block text-sm font-medium">Who writes code, or does other technical work on your product? Was any of it done by a non-founder? Please explain.</label>
-                    <textarea name="technicalWork" rows="4" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium">Are you looking for a cofounder?</label>
-                    <textarea name="lookingForCofounder" rows="2" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
-                  </div>
+                <!-- Upload Area -->
+                <div id="video-upload-container" class="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                    <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    <p class="text-sm text-gray-600">Drop your video here or <button type="button" class="font-semibold text-orange-600 hover:text-orange-700">browse files</button></p>
+                    <p class="text-xs text-gray-400 mt-1">MP4, MOV, or AVI, max 100MB</p>
                 </div>
               </div>
-            </section>
-
-            <!-- Other sections remain the same -->
-            <div id="founder-video">...</div>
-            <div id="company">...</div>
-            <div id="progress">...</div>
-            <div id="idea">...</div>
-            <div id="equity">...</div>
-            <div id="curious">...</div>
-
-          </form>
-          
-          <div id="pitchResult" class="hidden mt-10 p-6 bg-white rounded-lg shadow-lg">
-              <h3 class="text-xl font-semibold text-gray-800">YC Partner Feedback</h3>
-              <div id="conversation" class="mt-4 space-y-4">
-                  <!-- Conversational exchange will happen here -->
-              </div>
+            </div>
           </div>
+
+          <!-- Company Section -->
+          <div id="company">
+            <h2 class="text-xl font-bold border-b pb-2">Company</h2>
+            <div class="mt-4 space-y-6">
+              <div>
+                <label for="startupName" class="block text-sm font-medium">Company name*</label>
+                <input type="text" id="startupName" name="startupName" required="" class="mt-2 w-full p-2 border border-gray-300 rounded-md">
+              </div>
+              <div>
+                <label for="oneLiner" class="block text-sm font-medium">Describe what your company does in 50 characters or less.*</label>
+                <input type="text" id="oneLiner" name="oneLiner" required="" maxlength="50" class="mt-2 w-full p-2 border border-gray-300 rounded-md">
+              </div>
+              <div>
+                <label for="companyUrl" class="block text-sm font-medium">Company URL, if any</label>
+                <input type="url" id="companyUrl" name="companyUrl" placeholder="https://" class="mt-2 w-full p-2 border border-gray-300 rounded-md">
+              </div>
+              <div>
+                 <label class="block text-sm font-medium">If you have a demo, attach it below.</label>
+                 <p class="text-sm text-gray-500">Anything that shows us how the product works. Please limit to 3 minutes / 100 MB.</p>
+                 <div class="mt-2 flex justify-center items-center w-full h-32 border-2 border-dashed border-gray-300 rounded-md bg-white">
+                    <div class="text-center">
+                      <svg class="mx-auto h-10 w-10 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      <p class="mt-1 text-sm text-gray-600">Drop here or <button type="button" class="font-semibold text-orange-600">browse</button></p>
+                    </div>
+                  </div>
+              </div>
+               <div>
+                <label for="productLink" class="block text-sm font-medium">Please provide a link to the product, if any.</label>
+                <input type="url" id="productLink" name="productLink" placeholder="https://" class="mt-2 w-full p-2 border border-gray-300 rounded-md">
+              </div>
+              <div>
+                <label for="loginCredentials" class="block text-sm font-medium">If login credentials are required for the link above, enter them here.</label>
+                <input type="text" id="loginCredentials" name="loginCredentials" placeholder="username / password" class="mt-2 w-full p-2 border border-gray-300 rounded-md">
+              </div>
+              <div>
+                <label for="productDescription" class="block text-sm font-medium">What is your company going to make? Please describe your product and what it does or will do.</label>
+                <textarea id="productDescription" name="problem" rows="4" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+              <div>
+                <label for="location" class="block text-sm font-medium">Where do you live now, and where would the company be based after YC?</label>
+                <input type="text" id="location" name="location" placeholder="Use the format City A, Country A / City B, Country B" class="mt-2 w-full p-2 border border-gray-300 rounded-md">
+              </div>
+              <div>
+                <label for="locationDecision" class="block text-sm font-medium">Explain your decision regarding location.</label>
+                <textarea id="locationDecision" name="locationDecision" rows="3" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Section -->
+          <div id="progress">
+            <h2 class="text-xl font-bold border-b pb-2">Progress</h2>
+             <div class="mt-4 space-y-6">
+                <div>
+                    <label for="progressStatus" class="block text-sm font-medium">How far along are you?</label>
+                    <textarea id="progressStatus" name="solution" rows="4" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                    <label for="timeWorked" class="block text-sm font-medium">How long have each of you been working on this? How much of that has been full-time? Please explain.</label>
+                    <textarea id="timeWorked" name="timeWorked" rows="3" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                    <label for="techStack" class="block text-sm font-medium">What tech stack are you using, or planning to use, to build this product? Include AI models and AI coding tools you use.</label>
+                    <textarea id="techStack" name="techStack" rows="3" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium">Are people using your product?</label>
+                  <div class="mt-2 space-x-4">
+                    <label><input type="radio" name="users" value="yes" class="mr-1"> Yes</label>
+                    <label><input type="radio" name="users" value="no" class="mr-1"> No</label>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium">Do you have revenue?</label>
+                  <div class="mt-2 space-x-4">
+                    <label><input type="radio" name="revenue" value="yes" class="mr-1"> Yes</label>
+                    <label><input type="radio" name="revenue" value="no" class="mr-1"> No</label>
+                  </div>
+                </div>
+                <div>
+                    <label for="previousIdeas" class="block text-sm font-medium">If you are applying with the same idea as a previous batch, did anything change? If you applied with a different idea, why did you pivot and what did you learn from the last idea?</label>
+                    <textarea id="previousIdeas" name="previousIdeas" rows="3" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                    <label for="accelerators" class="block text-sm font-medium">If you have already participated or committed to participate in an incubator, “accelerator” or “pre-accelerator” program, please tell us about it.</label>
+                    <textarea id="accelerators" name="accelerators" rows="3" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+             </div>
+          </div>
+
+          <!-- Idea Section -->
+          <div id="idea">
+            <h2 class="text-xl font-bold border-b pb-2">Idea</h2>
+            <div class="mt-4 space-y-6">
+                <div>
+                    <label for="whyThisIdea" class="block text-sm font-medium">Why did you pick this idea to work on? Do you have domain expertise in this area? How do you know people need what you're making?</label>
+                    <textarea id="whyThisIdea" name="team" rows="4" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                    <label for="competitors" class="block text-sm font-medium">Who are your competitors? What do you understand about your business that they don't?</label>
+                    <textarea id="competitors" name="traction" rows="4" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                    <label for="monetization" class="block text-sm font-medium">How do or will you make money? How much could you make?</label>
+                    <p class="text-sm text-gray-500">(We realize you can't know precisely, but give your best estimate)</p>
+                    <textarea id="monetization" name="monetization" rows="3" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                    <label for="category" class="block text-sm font-medium">Which category best applies to your company?</label>
+                    <select id="category" name="category" class="mt-2 w-full p-2 border border-gray-300 rounded-md bg-white">
+                        <option value="">Select a category</option>
+                        <option value="b2b">B2B</option>
+                        <option value="b2c">B2C</option>
+                        <option value="saas">SaaS</option>
+                        <option value="marketplace">Marketplace</option>
+                        <option value="ai">AI</option>
+                        <option value="dev-tools">Developer Tools</option>
+                        <option value="fintech">Fintech</option>
+                        <option value="health">Healthcare</option>
+                        <option value="hardware">Hardware</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="otherIdeas" class="block text-sm font-medium">If you had any other ideas you considered applying with, please list them. One may be something we've been waiting for. Often when we fund people it's to do something they list here and not in the main application.</label>
+                    <textarea id="otherIdeas" name="otherIdeas" rows="4" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+            </div>
+          </div>
+
+          <!-- Equity Section -->
+          <div id="equity">
+            <h2 class="text-xl font-bold border-b pb-2">Equity</h2>
+            <div class="mt-4 space-y-6">
+              <div>
+                  <label class="block text-sm font-medium">Have you formed ANY legal entity yet?</label>
+                  <p class="text-sm text-gray-500">This may be in the US, in your home country or in another country.</p>
+                  <div class="mt-2 space-x-4">
+                    <label><input type="radio" name="legalEntity" value="yes" class="mr-1"> Yes</label>
+                    <label><input type="radio" name="legalEntity" value="no" class="mr-1"> No</label>
+                  </div>
+              </div>
+              <div>
+                  <label class="block text-sm font-medium">Have you taken any investment yet?</label>
+                  <div class="mt-2 space-x-4">
+                    <label><input type="radio" name="investment" value="yes" class="mr-1"> Yes</label>
+                    <label><input type="radio" name="investment" value="no" class="mr-1"> No</label>
+                  </div>
+              </div>
+              <div>
+                  <label class="block text-sm font-medium">Are you currently fundraising?</label>
+                  <div class="mt-2 space-x-4">
+                    <label><input type="radio" name="fundraising" value="yes" class="mr-1"> Yes</label>
+                    <label><input type="radio" name="fundraising" value="no" class="mr-1"> No</label>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Curious Section -->
+          <div id="curious">
+            <h2 class="text-xl font-bold border-b pb-2">Curious</h2>
+            <div class="mt-4 space-y-6">
+              <div>
+                <label for="whyYc" class="block text-sm font-medium">What convinced you to apply to Y Combinator? Did someone encourage you to apply? Have you been to any YC events?</label>
+                <textarea id="whyYc" name="whyYc" rows="3" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+              <div>
+                <label for="howHeard" class="block text-sm font-medium">How did you hear about Y Combinator?</label>
+                <textarea id="howHeard" name="howHeard" rows="3" class="mt-2 w-full p-2 border border-gray-300 rounded-md"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+        
+        <div id="pitchResult" class="hidden mt-10 p-6 bg-white rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold text-gray-800">YC Partner Feedback</h3>
+            <div id="conversation" class="mt-4 space-y-4">
+                <!-- Conversational exchange will happen here -->
+            </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
 
     <!-- Footer / Actions -->
     <footer class="mt-12 pt-6 border-t flex justify-between items-center">
@@ -108,5 +287,6 @@
 
   <!-- Main Application Script -->
   <script src="script.js?v=2"></script>
-</body>
-</html>
+
+
+</body></html>
