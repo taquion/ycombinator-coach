@@ -11,25 +11,19 @@
   <div class="w-full max-w-6xl mx-auto p-8">
     <!-- Header -->
     <header class="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
-      <div class="flex items-center">
-        <img src="/assets/logo.png" alt="YC Coach Logo" class="h-10 w-10 mr-4">
-        <div>
-          <h1 class="text-2xl font-bold">Get Coaching on your YC Application</h1>
-          <p class="text-xs text-gray-500">This is a community project <em>not</em> affiliated to YC</p>
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center">
+          <img src="/assets/logo.svg" alt="YC Coach Logo" class="h-8 w-8 mr-2">
+          <h1 class="text-xl font-bold text-gray-800">Get Coaching on your YC Application</h1>
         </div>
-      </div>
-      <div id="user-session-controls" class="flex items-center">
-        <!-- This will be populated by auth.js -->
+        <div id="user-session-controls" class="flex items-center">
+          <!-- Auth buttons will be injected here by auth.js -->
+        </div>
       </div>
     </header>
 
     <!-- Main Content Area -->
     <main>
-      <!-- Login Prompt Section -->
-      <div id="login-prompt-container" class="hidden bg-orange-50 border border-orange-200 text-center p-8 rounded-lg mb-8">
-          <!-- This content will be populated by auth.js -->
-      </div>
-
       <!-- Main layout: Content + Sidebar -->
       <div class="flex flex-row-reverse gap-8">
         <!-- Sidebar -->

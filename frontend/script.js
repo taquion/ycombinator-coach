@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial Setup ---
     initializeFounders();
-    initializeBusinessInfo();
+    // initializeBusinessInfo(); // Disabled to start with a clean form
     setupCountdown();
     setupScrollSpy();
     document.getElementById('add-cofounder-btn').addEventListener('click', addFounder);

@@ -2,27 +2,16 @@
 
 
 
-// Function to handle the login process
-function signIn(method) {
-    // Before redirecting, save the current state of the form.
-    if (typeof saveFormState === 'function') {
-        saveFormState();
-    } else {
-        console.error('saveFormState function not found. Make sure script.js is loaded.');
-    }
-
-    if (method === 'loginPopup') {
-        msalInstance.loginPopup(loginRequest)
-            .then(handleResponse)
-            .catch(error => {
-                console.error(error);
-            });
-    } else if (method === 'loginRedirect') {
-        msalInstance.loginRedirect(loginRequest);
-    }
+// Function to handle the login process using a popup
+function signIn() {
+    msalInstance.loginPopup(loginRequest)
+        .then(handleResponse)
+        .catch(error => {
+            console.error("Login popup failed: ", error);
+        });
 }
 
-// Function to handle the logout process
+// Function to handle the sign-out process
 function signOut() {
     const account = msalInstance.getAccountByUsername(sessionStorage.getItem("msal_username"));
     const logoutRequest = {
@@ -35,41 +24,37 @@ function signOut() {
 // Function to update the UI based on authentication state
 function updateUI(account) {
     const userSessionControls = document.getElementById('user-session-controls');
-    const loginPromptContainer = document.getElementById('login-prompt-container');
     const foundersContainer = document.getElementById('founders-container');
 
     if (account) {
-        // User is signed in: Hide prompt, show founders, update welcome message
-        sessionStorage.setItem("msal_username", account.username);
-        const claims = account.idTokenClaims;
-        const displayName = claims.given_name || account.username;
+        // --- User is signed in ---
+        if (foundersContainer) foundersContainer.classList.remove('hidden');
 
-        userSessionControls.innerHTML = `
-            <span class="text-sm text-gray-700">Welcome, ${displayName}</span>
-            <button onclick="signOut()" class="ml-4 px-4 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md hover:bg-orange-600">Sign Out</button>
-        `;
+        // Display welcome message and sign-out button in the header
+        const welcomeMessage = `
+            <div class="text-right">
+                <p class="text-sm text-gray-600">Welcome, ${account.name || account.username}</p>
+                <button onclick="signOut()" class="text-sm font-semibold text-orange-600 hover:text-orange-500">Sign Out</button>
+            </div>`;
+        if (userSessionControls) userSessionControls.innerHTML = welcomeMessage;
 
-        if (loginPromptContainer) loginPromptContainer.style.display = 'none';
-        if (foundersContainer) foundersContainer.style.display = 'block';
-        
-        populateFounders(account);
-
-    } else {
-        // User is not signed in: Show prompt, hide founders
-        userSessionControls.innerHTML = ''; // Clear welcome message area
-
-        if (loginPromptContainer) {
-            loginPromptContainer.innerHTML = `
-                <h2 class="text-xl font-semibold mb-2">Welcome to YC Coach</h2>
-                <p class="text-gray-600 mb-4">Sign up or log in for free to get feedback on your YC application and save your progress.</p>
-                <button onclick="signIn('loginRedirect')" class="px-6 py-2 font-semibold text-white bg-orange-500 rounded-md hover:bg-orange-600">Sign In or Sign Up</button>
-            `;
-            loginPromptContainer.style.display = 'block';
+        // Special logic for the admin user to see founders
+        if (account.username.toLowerCase() === 'dnader90@gmail.com') {
+            populateFounders(account);
+        } else {
+            if (foundersContainer) foundersContainer.innerHTML = ''; // Clear for others
         }
 
-        if (foundersContainer) foundersContainer.style.display = 'none';
-        
-        populateFounders(null); // Ensure founders list is cleared
+    } else {
+        // --- User is not signed in ---
+        if (foundersContainer) foundersContainer.classList.add('hidden');
+
+        // Display sign-in button in the header
+        const signInButton = `
+            <button onclick="signIn()" class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition duration-300">
+                Sign In or Sign Up
+            </button>`;
+        if (userSessionControls) userSessionControls.innerHTML = signInButton;
     }
 }
 
