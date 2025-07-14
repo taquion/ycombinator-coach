@@ -1,0 +1,12 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "This document provides an overview of the frontend for the `ycombinator.coach` application. The frontend is a single-page application built with HTML, Tailwind CSS, and vanilla JavaScript.",
+  "main": "auth.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

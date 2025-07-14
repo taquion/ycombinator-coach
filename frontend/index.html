@@ -72,10 +72,20 @@
               <p class="text-sm text-gray-500 mb-4">Make sure the file does not exceed 100 MB. Read more about the video <a href="#" class="text-orange-600 underline">here</a>.</p>
               <div class="grid grid-cols-1 gap-6 items-center">
                 <!-- Upload Area -->
-                <div id="video-upload-container" class="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                <label for="video-file-input" id="video-upload-container" class="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer hover:border-orange-600 hover:bg-orange-50">
                     <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                    <p class="text-sm text-gray-600">Drop your video here or <button type="button" class="font-semibold text-orange-600 hover:text-orange-700">browse files</button></p>
+                    <p class="text-sm text-gray-600">Drop your video here or <span class="font-semibold text-orange-600">browse files</span></p>
                     <p class="text-xs text-gray-400 mt-1">MP4, MOV, or AVI, max 100MB</p>
+                </label>
+                <input type="file" id="video-file-input" class="hidden" accept="video/mp4,video/quicktime,video/x-msvideo">
+
+                <div class="mt-4 text-center">
+                  <p class="text-sm text-gray-500">OR</p>
+                </div>
+
+                <div class="mt-4">
+                  <label for="youtube-url" class="block text-sm font-medium text-gray-700">Paste a YouTube URL</label>
+                  <input type="text" name="youtube-url" id="youtube-url" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="https://www.youtube.com/watch?v=...">
                 </div>
               </div>
             </div>
