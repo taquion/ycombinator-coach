@@ -5,6 +5,7 @@ import os
 
 # By placing tests in a parallel directory, we can import the function
 # from the __init__.py file of the target function app
+from azure.cosmos import CosmosClient
 from ..evaluate_pitch import main as evaluate_pitch_main
 
 # Mock the OpenAI API client
@@ -24,8 +25,25 @@ def mock_openai_client(mocker):
     mock_client.create.return_value = mock_response
     return mock_client
 
+@pytest.fixture
+def mock_cosmos_client(mocker):
+    """Mocks the Cosmos DB client and its methods."""
+    # Mock the client constructor and the chain of method calls
+    mock_from_connection_string = mocker.patch('azure.cosmos.CosmosClient.from_connection_string')
+    mock_client_instance = mocker.MagicMock(spec=CosmosClient)
+    mock_db_instance = mocker.MagicMock()
+    mock_container_instance = mocker.MagicMock()
 
-def test_evaluate_pitch_happy_path(mock_openai_client):
+    mock_from_connection_string.return_value = mock_client_instance
+    mock_client_instance.get_database_client.return_value = mock_db_instance
+    mock_db_instance.get_container_client.return_value = mock_container_instance
+
+    # Return the mock container so we can assert calls to its methods (e.g., upsert_item)
+    return mock_container_instance
+
+
+
+def test_evaluate_pitch_happy_path(mock_openai_client, mock_cosmos_client):
     """Tests a successful run of the evaluate_pitch function."""
     # 1. Prepare a sample HTTP request with a valid JSON body
     sample_body = {
@@ -41,7 +59,8 @@ def test_evaluate_pitch_happy_path(mock_openai_client):
             }
         ],
         "startupName": "Analytical Engines Inc.",
-        "oneLiner": "We build the future of computing."
+        "oneLiner": "We build the future of computing.",
+        "userId": "test-user-123" # Added userId as it's now required
     }
 
     req = func.HttpRequest(
@@ -73,12 +92,31 @@ def test_evaluate_pitch_happy_path(mock_openai_client):
     assert 'Ada Lovelace' in user_content
     assert 'Analytical Engines Inc.' in user_content
 
-def test_evaluate_pitch_error_handling():
-    """Tests the function's response to a request with missing data."""
-    # 1. Prepare a request with an empty body
+    # 5. Assert that Cosmos DB was called correctly
+    assert mock_cosmos_client.upsert_item.call_count == 2
+    # First call: save initial application
+    first_call_args = mock_cosmos_client.upsert_item.call_args_list[0][1]['body']
+    assert first_call_args['userId'] == 'test-user-123'
+    assert 'application_details' in first_call_args
+    assert first_call_args['application_details']['startupName'] == 'Analytical Engines Inc.'
+    assert first_call_args['conversation_history'] == []
+
+    # Second call: save updated conversation with AI response
+    second_call_args = mock_cosmos_client.upsert_item.call_args_list[1][1]['body']
+    assert len(second_call_args['conversation_history']) == 1
+    first_message = second_call_args['conversation_history'][0]
+    assert first_message['role'] == 'assistant'
+    assert first_message['content']['first_question'] == "This is a test question."
+
+def test_evaluate_pitch_missing_userid():
+    """Tests the function's response to a request missing the userId."""
+    # 1. Prepare a request with a body that lacks the 'userId' field
+    sample_body_no_user = {
+        "startupName": "Test Corp"
+    }
     req = func.HttpRequest(
         method='POST',
-        body=b'',
+        body=json.dumps(sample_body_no_user).encode('utf-8'),
         url='/api/evaluate_pitch',
         headers={'Content-Type': 'application/json'}
     )
@@ -86,7 +124,7 @@ def test_evaluate_pitch_error_handling():
     # 2. Call the function
     resp = evaluate_pitch_main(req)
 
-    # 3. Assert that it returns a 500 error
-    assert resp.status_code == 500
+    # 3. Assert that it returns a 401 Unauthorized error
+    assert resp.status_code == 401
     response_json = json.loads(resp.get_body())
-    assert 'error' in response_json
+    assert 'User ID is missing' in response_json['error']

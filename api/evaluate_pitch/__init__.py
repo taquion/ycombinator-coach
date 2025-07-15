@@ -4,7 +4,9 @@ import json
 import openai
 import os
 import csv
+import uuid
 from typing import Dict, Any
+from azure.cosmos import CosmosClient, PartitionKey
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     # By moving the key assignment here, we ensure it only runs when the function is called.
@@ -27,6 +29,35 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         rubric_text = "\n".join([','.join(row) for row in rubric])
 
         req_body = req.get_json()
+
+        # --- Cosmos DB Connection and Data Persistence ---
+        # Expecting userId to be passed from the authenticated frontend
+        user_id = req_body.get('userId')
+        if not user_id:
+            return func.HttpResponse(
+                json.dumps({"error": "User ID is missing. User must be logged in."}),
+                status_code=401,
+                mimetype="application/json"
+            )
+
+        # Initialize Cosmos Client
+        cosmos_client = CosmosClient.from_connection_string(os.environ["CosmosDbConnectionString"])
+        database = cosmos_client.get_database_client(os.environ["COSMOS_DB_DATABASE_NAME"])
+        container = database.get_container_client(os.environ["COSMOS_DB_CONTAINER_NAME"])
+
+        # Create a new application document
+        application_id = str(uuid.uuid4())
+        application_data = {
+            'id': application_id,
+            'userId': user_id,
+            'application_details': req_body, # Save the entire original request
+            'conversation_history': [] # Initialize conversation history
+        }
+
+        # Save the initial application to Cosmos DB
+        container.upsert_item(body=application_data)
+        logging.info(f"Successfully saved initial application {application_id} for user {user_id}.")
+
 
         # --- Founder Profile Aggregation ---
         founders_data = req_body.get('founders', [])
@@ -119,8 +150,30 @@ Example JSON output:
 
         )
 
+        ai_response_content = response.choices[0].message.content
+
+        # --- Save AI response to conversation history ---
+        try:
+            # Attempt to parse the AI response to ensure it's valid JSON
+            report_json = json.loads(ai_response_content)
+            application_data['conversation_history'].append({
+                'role': 'assistant',
+                'content': report_json
+            })
+            # Update the item in Cosmos DB with the new conversation
+            container.upsert_item(body=application_data)
+            logging.info(f"Successfully saved AI report for application {application_id}.")
+        except json.JSONDecodeError:
+            logging.error("AI response was not valid JSON. Storing as raw string.")
+            application_data['conversation_history'].append({
+                'role': 'assistant',
+                'content': ai_response_content
+            })
+            container.upsert_item(body=application_data)
+
+
         return func.HttpResponse(
-            response.choices[0].message.content,
+            ai_response_content,
             mimetype="application/json",
             status_code=200
         )
