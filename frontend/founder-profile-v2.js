@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainForm = document.getElementById('founderProfileForm');
         mainForm.reset();
 
-        // Clear dynamic lists
+        // Clear dynamic l
         profileData = {
             education: [],
             work: []

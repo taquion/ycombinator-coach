@@ -48,3 +48,4 @@ build/
 # Local development
 .DS_Store
 Thumbs.db
+local.settings.json

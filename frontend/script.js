@@ -226,6 +226,20 @@ document.addEventListener('DOMContentLoaded', () => {
         originalPitch.founders = founders;
         console.log('DEBUG: Original pitch data collected:', originalPitch);
 
+        // Get the logged-in user's account from MSAL
+        const account = msalInstance.getActiveAccount();
+
+        // Ensure user is logged in before proceeding
+        if (!account || !account.idTokenClaims) {
+            displayError('You must be logged in to submit your application. Please use the login button.');
+            showLoading(false);
+            return; // Stop the submission
+        }
+
+        // Add the user's unique object ID to the request payload
+        originalPitch.userId = account.idTokenClaims.oid;
+        console.log(`DEBUG: Attaching userId ${originalPitch.userId} to the request.`);
+
         try {
             console.log('DEBUG: Sending request to /api/evaluate_pitch...');
             const API_BASE_URL = 'https://ycoach-api-prod.azurewebsites.net';
