@@ -33,7 +33,7 @@ function updateUI(account) {
         // Display welcome message and sign-out button in the header
         const welcomeMessage = `
             <div class="text-right">
-                <p class="text-sm text-gray-600">Welcome, ${account.name || account.username}</p>
+                <p class="text-sm text-gray-600">Welcome, ${account.username || account.name}</p>
                 <button onclick="signOut()" class="text-sm font-semibold text-orange-600 hover:text-orange-500">Sign Out</button>
             </div>`;
         if (userSessionControls) userSessionControls.innerHTML = welcomeMessage;
