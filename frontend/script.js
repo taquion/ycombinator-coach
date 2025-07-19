@@ -241,9 +241,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`DEBUG: Attaching userId ${originalPitch.userId} to the request.`);
 
         try {
+            // Save the profile data first, without waiting for the response
+            saveProfileData(originalPitch);
+
             console.log('DEBUG: Sending request to /api/evaluate_pitch...');
             const API_BASE_URL = 'https://ycoach-api-prod.azurewebsites.net';
-    const response = await fetch(`${API_BASE_URL}/api/evaluate_pitch`, {
+            const response = await fetch(`${API_BASE_URL}/api/evaluate_pitch`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(originalPitch),
@@ -358,6 +361,29 @@ document.addEventListener('DOMContentLoaded', () => {
             displaySummary(result.summary);
         } catch (error) {
             displayError(error.message);
+        }
+    }
+
+    // --- Data Persistence --- 
+    async function saveProfileData(profileData) {
+        try {
+            console.log('DEBUG: Sending request to /api/save_profile...');
+            const API_BASE_URL = 'https://ycoach-api-prod.azurewebsites.net'; 
+            const response = await fetch(`${API_BASE_URL}/api/save_profile`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(profileData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: 'Failed to parse save_profile error response.' }));
+                // Log the error but don't block the user-facing evaluation flow
+                console.error('DEBUG: Failed to save profile:', errorData.error || `HTTP error! status: ${response.status}`);
+            } else {
+                console.log('DEBUG: Profile data saved successfully.');
+            }
+        } catch (error) {
+            console.error('DEBUG: CATCH block - Error during profile save:', error);
         }
     }
 

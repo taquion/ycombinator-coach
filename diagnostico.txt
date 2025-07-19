@@ -1,0 +1,41 @@
+## Diagnóstico Técnico Detallado: Problema de Autenticación MSAL
+
+**Fecha:** 2025-07-19
+
+### 1. Descripción del Problema Principal
+
+El sistema de autenticación presenta una "race condition" (condición de carrera) persistente. El script principal de la aplicación (`auth.js`) intenta utilizar la librería MSAL antes de que esta esté completamente cargada y disponible en el navegador. Esto resulta en dos errores críticos recurrentes:
+
+1.  `Uncaught ReferenceError: msal is not defined`: Ocurre en la primera línea de `auth.js` al intentar crear la instancia de MSAL (`new msal.PublicClientApplication`). Demuestra que el objeto `msal` no existe en el momento de la ejecución.
+2.  `Uncaught ReferenceError: Cannot access 'msalInstance' before initialization`: Es una consecuencia directa del primer error. Como la creación de `msalInstance` falla, cualquier intento de usarla (por ejemplo, al hacer clic en "Sign Out") resulta en este error.
+
+### 2. Historial de Intentos de Solución y Análisis de Fallos
+
+Se implementaron múltiples estrategias estándar de la industria, pero fallaron, apuntando a un problema subyacente más allá del código, probablemente relacionado con el cache del navegador o del servidor.
+
+*   **Intento 1: Mover Scripts y Usar `defer` (Solución Estándar)**
+    *   **Acción:** Se colocó el script de la librería MSAL en el `<head>` y los scripts de la aplicación al final del `<body>`, todos con el atributo `defer`. 
+    *   **Análisis del Fallo:** Teóricamente, `defer` debería haber garantizado el orden de ejecución correcto. Su fallo sugiere que el navegador no estaba respetando el orden, probablemente debido a que estaba cargando versiones cacheadas de los archivos HTML o JS sin los atributos `defer` correctos.
+
+*   **Intento 2: Scripts en Línea (Inline Scripts)**
+    *   **Acción:** Se incrustó la configuración y la lógica de autenticación directamente en los archivos HTML.
+    *   **Análisis del Fallo:** Esta técnica es propensa a errores de tiempo y no resolvió la race condition fundamental, además de ser una mala práctica de mantenimiento.
+
+*   **Intento 3: Delegación de Eventos**
+    *   **Acción:** Se reemplazaron los `onclick` en el HTML por un `event listener` centralizado en `auth.js` para manejar los clics en los botones de autenticación.
+    *   **Análisis del Fallo:** Aunque esta es la forma correcta de manejar los eventos, no resuelve el problema de inicialización. El error `signOut is not defined` seguía apareciendo en la consola haciendo referencia a un `onclick`, lo que es una prueba contundente de que se estaba ejecutando una versión antigua y cacheada de `auth.js`.
+
+*   **Intento 4: Reescritura Completa y `defer`**
+    *   **Acción:** Se reescribió `auth.js` desde cero para asegurar que no hubiera código corrupto y se re-aplicó la estrategia de `defer`.
+    *   **Análisis del Fallo:** El problema persistió, confirmando que el `defer` por sí solo no es suficiente en este entorno, probablemente debido al cache agresivo.
+
+### 3. Diagnóstico Final y Causa Raíz
+
+La causa raíz es una combinación de una **race condition** y un **problema de cache agresivo**. El navegador está ejecutando versiones antiguas de los archivos, lo que invalida las correcciones aplicadas al código. La solución debe ser a prueba de cache y forzar explícitamente la ejecución en el momento correcto.
+
+### 4. Solución Definitiva Propuesta
+
+La solución final y más robusta es envolver **toda la lógica de autenticación** dentro de un listener para el evento `DOMContentLoaded`. 
+
+*   **¿Cómo funciona?** Este evento es disparado por el navegador solo cuando el documento HTML ha sido completamente cargado y parseado. Esto incluye todos los scripts, como la librería MSAL.
+*   **¿Por qué funcionará?** Al colocar nuestro código dentro de este listener, garantizamos de forma explícita y a prueba de cache que no se ejecutará ni una sola línea de `auth.js` hasta que sea 100% seguro hacerlo. Esto elimina la race condition de raíz, ya que el objeto `msal` siempre existirá cuando nuestro código lo necesite.
