@@ -3,11 +3,17 @@ import azure.functions as func
 import json
 
 def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function to save profile processed a request.')
+    logging.info('--- Save Profile Function Triggered ---')
 
     try:
+        # Log the raw request body to see exactly what is being sent
+        req_body_bytes = req.get_body()
+        req_body_str = req_body_bytes.decode('utf-8')
+        logging.info(f"DEBUG: Raw request body received: {req_body_str}")
+
         # Get the profile data from the request body
         profile_data = req.get_json()
+        logging.info(f"DEBUG: Parsed JSON data: {profile_data}")
     except ValueError:
         return func.HttpResponse(
              "Invalid JSON in request body.",

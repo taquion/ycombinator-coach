@@ -391,7 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return; // Stop if no user is logged in
         }
 
-        const success = await saveProfileData(profileData);
+        console.log('DEBUG: Final payload to be sent to backend:', JSON.stringify(profileData, null, 2));
+    const success = await saveProfileData(profileData);
 
         if (success) {
             saveProfileBtn.textContent = 'Saved!';
@@ -423,8 +424,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: 'Failed to parse save_profile error response.' }));
-                console.error('DEBUG: Failed to save profile:', errorData.error || `HTTP error! status: ${response.status}`);
+                const errorText = await response.text(); // Get raw text for more details
+                console.error(`DEBUG: Failed to save profile. Status: ${response.status}. Response: ${errorText}`);
                 return false;
             } else {
                 console.log('DEBUG: Profile data saved successfully.');
