@@ -382,7 +382,14 @@ document.addEventListener('DOMContentLoaded', () => {
             saveProfileBtn.textContent = originalText;
             return;
         }
-        profileData.userId = account.idTokenClaims.oid; // Use OID for backend
+        if (account) {
+            profileData.userId = account.idTokenClaims.oid;
+            console.log(`DEBUG: [Save Button] Attaching userId ${profileData.userId} to the request.`);
+        } else {
+            console.error("DEBUG: User not authenticated, cannot save profile.");
+            // Optional: Show an error to the user
+            return; // Stop if no user is logged in
+        }
 
         const success = await saveProfileData(profileData);
 
