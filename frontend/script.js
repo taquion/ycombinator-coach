@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- UI Elements ---
     const pitchForm = document.getElementById('pitchForm');
     const pitchResultDiv = document.getElementById('pitchResult');
-    const conversationDiv = document.getElementById('conversation');
+    const addFounderBtn = document.getElementById('add-cofounder-btn');
+    const saveProfileBtn = document.getElementById('save-profile-btn');
+    const lastSavedTimestampEl = document.getElementById('last-saved-timestamp');
     const countdownContainer = document.getElementById('countdown-container');
     const sections = document.querySelectorAll('div[id]');
     const navLinks = document.querySelectorAll('div.sticky ul a');
@@ -27,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // initializeBusinessInfo(); // Disabled to start with a clean form
     setupCountdown();
     setupScrollSpy();
-    document.getElementById('add-cofounder-btn').addEventListener('click', addFounder);
+    if (addFounderBtn) addFounderBtn.addEventListener('click', addFounder);
+    if (saveProfileBtn) saveProfileBtn.addEventListener('click', handleSaveProfileClick);
     restoreFormState(); // Restore form state on page load
 
     // --- Form State Management ---
@@ -87,10 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Curious
         document.getElementById('whyYc').value = 'We believe YC\'s network and mentorship are unparalleled and will be critical for helping us scale our sales strategy and product.';
         document.getElementById('howHeard').value = 'Through the YC blog, podcasts, and several YC alumni who recommended we apply.';
-
-        // Founders Section Textareas
-        document.querySelector('textarea[name="technicalWork"]').value = 'Alex is responsible for all backend development and AI model integration. Brenda handles frontend UI/UX and business logic implementation.';
-        document.querySelector('textarea[name="lookingForCofounder"]').value = 'No, our founding team is set.';
     }
 
     // --- Founder Management ---
@@ -365,6 +364,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Data Persistence --- 
+    async function handleSaveProfileClick() {
+        if (!saveProfileBtn) return;
+
+        const originalText = saveProfileBtn.textContent;
+        saveProfileBtn.disabled = true;
+        saveProfileBtn.textContent = 'Saving...';
+
+        const formData = new FormData(pitchForm);
+        const profileData = Object.fromEntries(formData.entries());
+        profileData.founders = founders; // Add founders data
+
+        const account = msalInstance.getActiveAccount();
+        if (!account || !account.idTokenClaims) {
+            displayError('You must be logged in to save your profile.');
+            saveProfileBtn.disabled = false;
+            saveProfileBtn.textContent = originalText;
+            return;
+        }
+        profileData.userId = account.idTokenClaims.oid; // Use OID for backend
+
+        const success = await saveProfileData(profileData);
+
+        if (success) {
+            saveProfileBtn.textContent = 'Saved!';
+            updateLastSavedTimestamp();
+        } else {
+            saveProfileBtn.textContent = 'Save Failed';
+            saveProfileBtn.classList.remove('bg-gray-500', 'hover:bg-gray-600');
+            saveProfileBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+        }
+
+        setTimeout(() => {
+            saveProfileBtn.disabled = false;
+            saveProfileBtn.textContent = originalText;
+            if (!success) {
+                saveProfileBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+                saveProfileBtn.classList.add('bg-gray-500', 'hover:bg-gray-600');
+            }
+        }, 2000);
+    }
+
     async function saveProfileData(profileData) {
         try {
             console.log('DEBUG: Sending request to /api/save_profile...');
@@ -377,14 +417,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({ error: 'Failed to parse save_profile error response.' }));
-                // Log the error but don't block the user-facing evaluation flow
                 console.error('DEBUG: Failed to save profile:', errorData.error || `HTTP error! status: ${response.status}`);
+                return false;
             } else {
                 console.log('DEBUG: Profile data saved successfully.');
+                return true;
             }
         } catch (error) {
             console.error('DEBUG: CATCH block - Error during profile save:', error);
+            return false;
         }
+    }
+
+    function updateLastSavedTimestamp() {
+        if (!lastSavedTimestampEl) return;
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        lastSavedTimestampEl.textContent = `Last saved: ${timeString}`;
     }
 
     // --- UI Update Functions ---
