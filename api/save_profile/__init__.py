@@ -2,51 +2,46 @@ import logging
 import json
 import azure.functions as func
 import os
-from azure.cosmos import CosmosClient, PartitionKey
-
-# Get Cosmos DB connection details from App Settings
-connection_string = os.environ['CosmosDbConnectionString']
-database_name = 'ycoachdb'
-container_name = 'profiles'
-
-# Initialize CosmosClient
-# This is done outside the main function to reuse the client across multiple function invocations
-# as recommended by Microsoft for performance.
-cosmos_client = CosmosClient.from_connection_string(connection_string)
-database_client = cosmos_client.get_database_client(database_name)
-container_client = database_client.get_container_client(container_name)
+import uuid
+from azure.cosmos import CosmosClient
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('--- Save Profile function triggered. ---')
+    logging.info('--- BULLETPROOF TEST a.k.a. PLAN RADICAL v2 ---')
 
-    # 1. Parse JSON from the request body
     try:
-        req_body = req.get_json()
-    except ValueError:
-        logging.error("Invalid JSON in request body.")
-        return func.HttpResponse("Invalid JSON in request body.", status_code=400)
+        connection_string = os.environ['CosmosDbConnectionString']
+        logging.info('Successfully read connection string from environment variables.')
+    except KeyError:
+        logging.error('FATAL: CosmosDbConnectionString not found in environment variables.')
+        return func.HttpResponse("Database connection string is not configured.", status_code=500)
 
-    # 2. Validate that 'userId' exists and set it as the document 'id'
-    user_id = req_body.get('userId')
-    if not user_id:
-        logging.error("'userId' is missing from the request body.")
-        return func.HttpResponse("Error: 'userId' is missing from the request body.", status_code=400)
-    
-    req_body['id'] = user_id
+    database_name = 'ycoachdb'
+    container_name = 'profiles'
 
-    # 3. Set the document for the Cosmos DB output binding.
-    # The Azure Functions runtime handles the actual database operation after the function returns.
+    # Create a hardcoded document to test the connection
+    test_id = f"test-{uuid.uuid4()}"
+    test_document = {
+        'id': test_id,
+        'message': 'This is a bulletproof test.',
+        'status': 'SUCCESS'
+    }
+
     try:
-        # Use upsert_item to create or update the document.
-        # This is more robust than create_item.
-        container_client.upsert_item(body=req_body)
-        logging.info(f"Successfully saved document with id: {user_id} to Cosmos DB.")
+        logging.info(f"Attempting to connect to Cosmos DB with client.")
+        cosmos_client = CosmosClient.from_connection_string(connection_string)
+        database_client = cosmos_client.get_database_client(database_name)
+        container_client = database_client.get_container_client(container_name)
+        logging.info(f"Client initialized. Attempting to save document id: {test_id}")
+        
+        container_client.upsert_item(body=test_document)
+        
+        logging.info(f"BULLETPROOF TEST SUCCEEDED. Document {test_id} saved.")
         return func.HttpResponse(
-            json.dumps({"message": "Profile saved successfully."}),
+            json.dumps({"message": "Bulletproof test succeeded!", "id": test_id}),
             status_code=200,
             mimetype="application/json"
         )
+
     except Exception as e:
-        # Log the full exception for better debugging
-        logging.error(f"Error saving document to Cosmos DB: {e}", exc_info=True)
-        return func.HttpResponse("Error saving profile to the database.", status_code=500)
+        logging.error(f"BULLETPROOF TEST FAILED: {e}", exc_info=True)
+        return func.HttpResponse("Bulletproof test failed. Check logs for details.", status_code=500)
