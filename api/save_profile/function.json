@@ -20,7 +20,7 @@
       "type": "cosmosDB",
       "direction": "out",
       "name": "doc",
-      "databaseName": "YC-Coach-DB",
+      "databaseName": "YCombinator",
       "containerName": "Users",
       "connectionStringSetting": "CosmosDbConnectionString",
       "createIfNotExists": true
