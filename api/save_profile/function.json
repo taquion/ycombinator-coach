@@ -15,15 +15,6 @@
       "type": "http",
       "direction": "out",
       "name": "$return"
-    },
-    {
-      "type": "cosmosDB",
-      "direction": "out",
-      "name": "doc",
-      "databaseName": "YCombinator",
-      "containerName": "Users",
-      "connectionStringSetting": "CosmosDbConnectionString",
-      "createIfNotExists": true
     }
   ]
 }

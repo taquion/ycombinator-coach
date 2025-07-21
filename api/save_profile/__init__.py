@@ -1,8 +1,22 @@
 import logging
-import azure.functions as func
 import json
+import azure.functions as func
+import os
+from azure.cosmos import CosmosClient, PartitionKey
 
-def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:
+# Get Cosmos DB connection details from App Settings
+connection_string = os.environ['CosmosDbConnectionString']
+database_name = 'ycoachdb'
+container_name = 'profiles'
+
+# Initialize CosmosClient
+# This is done outside the main function to reuse the client across multiple function invocations
+# as recommended by Microsoft for performance.
+cosmos_client = CosmosClient.from_connection_string(connection_string)
+database_client = cosmos_client.get_database_client(database_name)
+container_client = database_client.get_container_client(container_name)
+
+def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('--- Save Profile function triggered. ---')
 
     # 1. Parse JSON from the request body
@@ -23,15 +37,16 @@ def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpRespon
     # 3. Set the document for the Cosmos DB output binding.
     # The Azure Functions runtime handles the actual database operation after the function returns.
     try:
-        doc.set(func.Document.from_dict(req_body))
-        logging.info(f"Document with id: {user_id} prepared for Cosmos DB.")
+        # Use upsert_item to create or update the document.
+        # This is more robust than create_item.
+        container_client.upsert_item(body=req_body)
+        logging.info(f"Successfully saved document with id: {user_id} to Cosmos DB.")
+        return func.HttpResponse(
+            json.dumps({"message": "Profile saved successfully."}),
+            status_code=200,
+            mimetype="application/json"
+        )
     except Exception as e:
-        logging.error(f"Error setting document for Cosmos DB: {e}")
-        return func.HttpResponse("Error preparing document for database.", status_code=500)
-
-    # 4. Return a success response
-    return func.HttpResponse(
-        json.dumps({"message": "Profile saved successfully."}),
-        status_code=200,
-        mimetype="application/json"
-    )
+        # Log the full exception for better debugging
+        logging.error(f"Error saving document to Cosmos DB: {e}", exc_info=True)
+        return func.HttpResponse("Error saving profile to the database.", status_code=500)
