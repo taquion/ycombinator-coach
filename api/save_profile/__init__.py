@@ -3,6 +3,7 @@ import azure.functions as func
 import json
 
 def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:
+    # Re-deploying to ensure connection string settings are applied.
     logging.info('--- Save Profile Function Triggered (Deployment Test) ---')
 
     try:
