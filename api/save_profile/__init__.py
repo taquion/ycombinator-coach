@@ -3,7 +3,7 @@ import azure.functions as func
 import json
 
 def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:
-    logging.info('--- Save Profile Function Triggered ---')
+    logging.info('--- Save Profile Function Triggered (Deployment Test) ---')
 
     try:
         # Log the raw request body to see exactly what is being sent
