@@ -22,7 +22,7 @@
       "name": "doc",
       "databaseName": "YC-Coach-DB",
       "containerName": "Users",
-      "connection": "CosmosDbConnectionString",
+      "connectionStringSetting": "CosmosDbConnectionString",
       "createIfNotExists": true
     }
   ]
